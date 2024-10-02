@@ -6,3 +6,100 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Tenant {
+  id          String        @id @default(uuid())
+  name        String
+  contactInfo String
+  userId      User[]
+  Event       Event[]
+  Ticket      Ticket[]
+  Transaction Transaction[]
+
+  @@map("tenants")
+}
+
+model User {
+  id            String        @id @unique @default(uuid())
+  name          String
+  email         String        @unique
+  firebaseToken String        @unique @map("firebase_token")
+  tenantId      String?       @map("tenant_id")
+  Ticket        Ticket[]
+  Transaction   Transaction[]
+
+  Tenant                  Tenant?                  @relation(fields: [tenantId], references: [id])
+  NotificationPreferences NotificationPreferences?
+  PrivacyConfig           PrivacyConfig?
+
+  @@map("users")
+}
+
+model Event {
+  id          String   @id @unique @default(uuid())
+  name        String
+  type        String
+  address     String
+  dateAndTime DateTime
+  tenantId    String
+
+  tenant Tenant   @relation(fields: [tenantId], references: [id])
+  Ticket Ticket[]
+
+  @@map("events")
+}
+
+model Ticket {
+  id       String @id @unique @default(uuid())
+  eventId  String @map("event_id")
+  tenantId String @map("tenant_id")
+  userId   String @map("user_id")
+  price    Float
+  code     String @unique
+  status   String
+
+  user   User   @relation(fields: [userId], references: [id])
+  event  Event  @relation(fields: [eventId], references: [id])
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@map("tickets")
+}
+
+model Transaction {
+  id              String   @id @unique @default(uuid())
+  price           Float
+  dateTransaction DateTime @default(now())
+  status          String
+  tenantId        String
+  userId          String
+  date            DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("transactions")
+}
+
+model NotificationPreferences {
+  id               String  @id @unique @default(uuid())
+  userId           String  @unique @map("user_id")
+  receiveEmail     Boolean @map("receive_email")
+  pushNotification Boolean @map("push_notification")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("notification_preferences")
+}
+
+model PrivacyConfig {
+  id                     String  @id @default(uuid())
+  userId                 String  @unique @map("user_id")
+  shareData              Boolean @map("share_data")
+  privateProfile         Boolean @map("private_profile")
+  transactionHistory     Boolean @map("transaction_history")
+  marketingCommunication Boolean @map("marketing_communication")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("privacy_configs")
+}
