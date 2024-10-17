@@ -1,24 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { UserService } from '../user/user.service'
+import { User } from '@prisma/client'
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly usersService: UserService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
-  async login(
-    username: string,
-    email: string,
-  ): Promise<{ access_token: string }> {
-    const user = await this.usersService.findByEmailOrUsername(username, email)
-
-    if (!user) {
-      throw new Error('User not found')
-    }
-
+  async login(user: User): Promise<{ access_token: string }> {
     const payload = {
       username: user.name,
       email: user.email,

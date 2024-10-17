@@ -5,7 +5,5 @@ import { AuthModule } from './auth.module'
 
 @Module({
   imports: [TenantModule, UserModule, AuthModule],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

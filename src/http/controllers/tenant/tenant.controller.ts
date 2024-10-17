@@ -4,8 +4,7 @@ import { TenantService } from 'src/services/tenant/tenant.service'
 
 @Controller('tenant')
 export class TenantController {
-  private readonly tenantService: TenantService
-
+  constructor(private readonly tenantService: TenantService) {}
   @Post('create')
   async create(@Body() data: Prisma.TenantCreateInput) {
     return this.tenantService.create(data)
