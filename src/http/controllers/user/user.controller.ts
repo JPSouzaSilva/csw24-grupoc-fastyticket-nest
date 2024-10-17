@@ -12,12 +12,17 @@ export class UserController {
     return this.userService.login(loginDto)
   }
 
-  @UseGuards(AuthGuard('jwt')) // Specify the JWT strategy
-  @Get('profile') // Changed route name to 'profile' for clarity
+  @UseGuards(AuthGuard('jwt'))
+  @Get('profile')
   async getUser(@Request() req) {
     return this.userService.findByEmailOrUsername(
       req.user.username,
       req.user.email,
     )
+  }
+
+  @Post('register')
+  async register(@Body() data) {
+    return this.userService.register(data)
   }
 }
