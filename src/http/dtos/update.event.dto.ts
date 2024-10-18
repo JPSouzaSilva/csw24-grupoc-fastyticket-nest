@@ -1,5 +1,5 @@
 export class UpdateEventDTO {
-    id?: string
+    id: string
     name?: string
     type?: string
     address?: string

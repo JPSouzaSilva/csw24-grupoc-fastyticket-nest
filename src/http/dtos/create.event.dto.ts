@@ -1,7 +1,6 @@
 export class CreateEventDto {
-    name: string
-    type: string
-    address: string
-    dateAndTime: Date | string
-    tenantId: string
+  name: string
+  type: string
+  address: string
+  dateAndTime: Date | string
 }

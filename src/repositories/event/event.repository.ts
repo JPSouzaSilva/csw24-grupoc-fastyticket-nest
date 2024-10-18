@@ -2,13 +2,13 @@ import { PrismaService } from 'src/services/prisma.service'
 import { IEventRepository } from '../interfaces/event.repository.interface'
 import { CreateEventDto } from 'src/http/dtos/create.event.dto'
 import { UpdateEventDTO } from 'src/http/dtos/update.event.dto'
+import { Injectable } from '@nestjs/common'
 
-export class EventRepository extends IEventRepository {
-  constructor(private readonly prisma: PrismaService) {
-    super()
-  }
+@Injectable()
+export class EventRepository implements IEventRepository {
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateEventDto) {
+  async create(data: CreateEventDto, tenantId: string) {
     return this.prisma.event.create({
       data: {
         name: data.name,
@@ -17,7 +17,7 @@ export class EventRepository extends IEventRepository {
         dateAndTime: data.dateAndTime,
         tenant: {
           connect: {
-            id: data.tenantId,
+            id: tenantId,
           },
         },
       },
@@ -47,8 +47,22 @@ export class EventRepository extends IEventRepository {
   }
 
   async update(data: UpdateEventDTO) {
-    return this.prisma.event.update({ where: { id }, data })
-  }
+    const { id, tenantId, ...updateData } = data;
+
+    return this.prisma.event.update({
+        where: { id },
+        data: {
+            ...updateData,
+            ...(tenantId && {
+                tenant: {
+                    connect: {
+                        id: tenantId,
+                    },
+                },
+            }),
+        },
+    });
+}
 
   async delete(id: string) {
     return this.prisma.event.delete({ where: { id } }).then(() => true)
