@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { IUserRepository } from '../interfaces/user.repository.interface'
 import { Prisma, User } from '@prisma/client'
 import { PrismaService } from 'src/services/prisma.service'
+import { RegisterUserDto } from 'src/http/dtos/register.user.dto'
+import { log } from 'console'
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -18,9 +20,38 @@ export class UserRepository implements IUserRepository {
     })
   }
 
-  async create(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({ data })
-  }
+  async create(data: RegisterUserDto): Promise<User> {
+    log(data)
+    const { tenantId, notificationPreferencesId, privacyConfigId, ...userData } = data;
+
+    return this.prisma.user.create({
+        data: {
+            ...userData, // Inclui os campos obrigatórios (name, email, role)
+            ...(tenantId && {
+                Tenant: {
+                    connect: {
+                        id: tenantId, // Se o tenantId for fornecido, conecta ao Tenant
+                    },
+                },
+            }),
+            ...(notificationPreferencesId && {
+                NotificationPreferences: {
+                    connect: {
+                        id: notificationPreferencesId, // Se notificationPreferencesId for fornecido, conecta a NotificationPreferences
+                    },
+                },
+            }),
+            ...(privacyConfigId && {
+                PrivacyConfig: {
+                    connect: {
+                        id: privacyConfigId, // Se privacyConfigId for fornecido, conecta a PrivacyConfig
+                    },
+                },
+            }),
+        },
+    });
+}
+
 
   async findAll(): Promise<User[]> {
     return this.prisma.user.findMany()

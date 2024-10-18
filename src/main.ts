@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { apiReference } from '@scalar/nestjs-api-reference'
-import { AppModule } from './app.module'
+import { AppModule } from './modules/app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -39,10 +39,10 @@ async function bootstrap() {
 
   await app.listen(3000)
   console.info(
-    `Server is running on http://localhost:${process.env.PORT || 8080}`,
+    `Server is running on http://localhost:${process.env.PORT || 3000}`,
   )
   console.info(
-    `The documentation is on http://localhost:${process.env.PORT || 8080}/docs`,
+    `The documentation is on http://localhost:${process.env.PORT || 3000}/docs`,
   )
 }
 bootstrap()

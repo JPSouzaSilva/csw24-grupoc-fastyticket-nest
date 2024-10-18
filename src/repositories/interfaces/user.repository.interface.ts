@@ -1,7 +1,8 @@
 import { Prisma, User } from '@prisma/client'
+import { RegisterUserDto } from 'src/http/dtos/register.user.dto';
 
 export abstract class IUserRepository {
-  abstract create(data: Prisma.UserCreateInput): Promise<User | null>
+  abstract create(data: RegisterUserDto): Promise<User | null>
   abstract findAll(): Promise<User[]>
   abstract findByEmailOrUsername(
     email: string,
