@@ -15,7 +15,7 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('profile') 
+  @Get('profile')
   async getUser(@Request() req) {
     return this.userService.findByEmailOrUsername(
       req.user.username,

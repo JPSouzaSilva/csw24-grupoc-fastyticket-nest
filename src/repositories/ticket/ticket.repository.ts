@@ -19,19 +19,16 @@ export class TicketRepository implements ITicketRepository {
     return this.prisma.ticket.create({ data })
   }
 
-  findAll(page: number, limit: number): Promise<Ticket[]> {
-    throw new Error('Method not implemented.')
-  }
-
   findById(id: string): Promise<Ticket> {
-    throw new Error('Method not implemented.')
+    return this.prisma.ticket.findUnique({ where: { id } })
   }
 
   update(data: Prisma.TicketUpdateInput): Promise<Ticket> {
-    throw new Error('Method not implemented.')
+    const id = data.id.toString()
+    return this.prisma.ticket.update({ where: { id }, data })
   }
 
   delete(id: string): Promise<boolean> {
-    throw new Error('Method not implemented.')
+    return this.prisma.ticket.delete({ where: { id } }).then(() => true)
   }
 }
