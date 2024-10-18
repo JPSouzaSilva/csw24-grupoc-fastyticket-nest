@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from 'src/services/prisma.service'
 import { ITenantRepository } from '../interfaces/tenant.repository.interface'
-import { isStringObject } from 'util/types'
-import { isString } from 'util'
 
 @Injectable()
 export class TenantRepository implements ITenantRepository {
@@ -25,24 +23,23 @@ export class TenantRepository implements ITenantRepository {
   }
 
   async create(data: Prisma.TenantCreateInput) {
-    if (typeof data.userId === 'string'){
+    if (typeof data.userId === 'string') {
       return this.prisma.tenant.create({
-          data: {
-              name: data.name,
-              contactInfo: data.contactInfo,
-              userId: {
-                  connect: {
-                      id: data.userId,
-                  },
-              },
-              Event: data.Event,
-              Ticket: data.Ticket,
-              Transaction: data.Transaction,
+        data: {
+          name: data.name,
+          contactInfo: data.contactInfo,
+          userId: {
+            connect: {
+              id: data.userId,
+            },
           },
-      });
+          Event: data.Event,
+          Ticket: data.Ticket,
+          Transaction: data.Transaction,
+        },
+      })
     } else {
-      return this.prisma.tenant.create({data})
+      return this.prisma.tenant.create({ data })
     }
-}
-
+  }
 }

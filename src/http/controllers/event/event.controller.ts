@@ -21,10 +21,7 @@ export class EventController {
   }
 
   @Get('all')
-  findAll(
-    @Query('page') page: number = 1, 
-    @Query('limit') limit: number = 10
-  ) {
-      return this.eventService.findAll(Number(page) || 1, Number(limit) || 10);
+  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    return this.eventService.findAll(Number(page) || 1, Number(limit) || 10)
   }
 }

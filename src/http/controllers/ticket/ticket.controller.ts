@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
-import { AuthGuard } from 'src/guard/auth.guard';
-import { CreateTicketDto } from 'src/http/dtos/create.ticket.dto';
-import { TicketService } from 'src/services/ticket/ticket.service';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+  Param,
+} from '@nestjs/common'
+import { AuthGuard } from 'src/guard/auth.guard'
+import { CreateTicketDto } from 'src/http/dtos/create.ticket.dto'
+import { TicketService } from 'src/services/ticket/ticket.service'
 
 @Controller('ticket')
 export class TicketController {
@@ -10,6 +18,11 @@ export class TicketController {
   @UseGuards(AuthGuard)
   @Post('create')
   create(@Request() req, @Body() createTicketDto: CreateTicketDto) {
-    return this.ticketService.create(createTicketDto, req);
+    return this.ticketService.create(createTicketDto, req)
+  }
+
+  @Get('event/:id')
+  findById(@Param('id') id: string) {
+    return this.ticketService.findByEventId(id)
   }
 }
