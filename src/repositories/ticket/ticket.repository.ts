@@ -6,6 +6,27 @@ import { Prisma, Ticket } from '@prisma/client'
 @Injectable()
 export class TicketRepository implements ITicketRepository {
   constructor(private readonly prisma: PrismaService) {}
+  async findByCodeAndEventIdAndUserId(
+    code: string,
+    eventId: string,
+    userId: string,
+  ): Promise<Ticket> {
+    return await this.prisma.ticket.findFirst({
+      where: {
+        code,
+        eventId,
+        userId,
+      },
+    })
+  }
+
+  findAllTicketAvailable(): Promise<Ticket[]> {
+    return this.prisma.ticket.findMany({
+      where: {
+        status: 'DISPONIVEL',
+      },
+    })
+  }
 
   findByEventId(eventId: string): Promise<Ticket[]> {
     return this.prisma.ticket.findMany({
@@ -23,8 +44,7 @@ export class TicketRepository implements ITicketRepository {
     return this.prisma.ticket.findUnique({ where: { id } })
   }
 
-  update(data: Prisma.TicketUpdateInput): Promise<Ticket> {
-    const id = data.id.toString()
+  update(id: string, data: Prisma.TicketUpdateInput): Promise<Ticket> {
     return this.prisma.ticket.update({ where: { id }, data })
   }
 

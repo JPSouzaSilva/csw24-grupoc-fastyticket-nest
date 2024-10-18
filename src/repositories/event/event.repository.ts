@@ -47,22 +47,22 @@ export class EventRepository implements IEventRepository {
   }
 
   async update(data: UpdateEventDTO) {
-    const { id, tenantId, ...updateData } = data;
+    const { id, tenantId, ...updateData } = data
 
     return this.prisma.event.update({
-        where: { id },
-        data: {
-            ...updateData,
-            ...(tenantId && {
-                tenant: {
-                    connect: {
-                        id: tenantId,
-                    },
-                },
-            }),
-        },
-    });
-}
+      where: { id },
+      data: {
+        ...updateData,
+        ...(tenantId && {
+          tenant: {
+            connect: {
+              id: tenantId,
+            },
+          },
+        }),
+      },
+    })
+  }
 
   async delete(id: string) {
     return this.prisma.event.delete({ where: { id } }).then(() => true)

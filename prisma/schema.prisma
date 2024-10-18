@@ -25,13 +25,14 @@ model User {
   email         String        @unique
   firebaseToken String?       @unique @map("firebase_token")
   tenantId      String?       @map("tenant_id")
-  role          String        
+  role          Role
   Ticket        Ticket[]
   Transaction   Transaction[]
 
   Tenant                  Tenant?                  @relation(fields: [tenantId], references: [id])
   NotificationPreferences NotificationPreferences?
   PrivacyConfig           PrivacyConfig?
+  Event                   Event[]
 
   @@map("users")
 }
@@ -45,7 +46,9 @@ model Event {
   tenantId    String
 
   tenant Tenant   @relation(fields: [tenantId], references: [id])
+  owner  User     @relation(fields: [userId], references: [id])
   Ticket Ticket[]
+  userId String
 
   @@map("events")
 }
@@ -103,4 +106,9 @@ model PrivacyConfig {
   user User @relation(fields: [userId], references: [id])
 
   @@map("privacy_configs")
+}
+
+enum Role {
+  ADMIN
+  USER
 }

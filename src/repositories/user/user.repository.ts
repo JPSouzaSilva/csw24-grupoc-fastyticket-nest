@@ -22,36 +22,40 @@ export class UserRepository implements IUserRepository {
 
   async create(data: RegisterUserDto): Promise<User> {
     log(data)
-    const { tenantId, notificationPreferencesId, privacyConfigId, ...userData } = data;
+    const {
+      tenantId,
+      notificationPreferencesId,
+      privacyConfigId,
+      ...userData
+    } = data
 
     return this.prisma.user.create({
-        data: {
-            ...userData, // Inclui os campos obrigatórios (name, email, role)
-            ...(tenantId && {
-                Tenant: {
-                    connect: {
-                        id: tenantId, // Se o tenantId for fornecido, conecta ao Tenant
-                    },
-                },
-            }),
-            ...(notificationPreferencesId && {
-                NotificationPreferences: {
-                    connect: {
-                        id: notificationPreferencesId, // Se notificationPreferencesId for fornecido, conecta a NotificationPreferences
-                    },
-                },
-            }),
-            ...(privacyConfigId && {
-                PrivacyConfig: {
-                    connect: {
-                        id: privacyConfigId, // Se privacyConfigId for fornecido, conecta a PrivacyConfig
-                    },
-                },
-            }),
-        },
-    });
-}
-
+      data: {
+        ...userData, // Inclui os campos obrigatórios (name, email, role)
+        ...(tenantId && {
+          Tenant: {
+            connect: {
+              id: tenantId, // Se o tenantId for fornecido, conecta ao Tenant
+            },
+          },
+        }),
+        ...(notificationPreferencesId && {
+          NotificationPreferences: {
+            connect: {
+              id: notificationPreferencesId, // Se notificationPreferencesId for fornecido, conecta a NotificationPreferences
+            },
+          },
+        }),
+        ...(privacyConfigId && {
+          PrivacyConfig: {
+            connect: {
+              id: privacyConfigId, // Se privacyConfigId for fornecido, conecta a PrivacyConfig
+            },
+          },
+        }),
+      },
+    })
+  }
 
   async findAll(): Promise<User[]> {
     return this.prisma.user.findMany()

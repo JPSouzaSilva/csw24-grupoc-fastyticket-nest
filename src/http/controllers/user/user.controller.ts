@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Body, Request, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Request,
+  UseGuards,
+  Put,
+} from '@nestjs/common'
+import type { User } from '@prisma/client'
 import { log } from 'console'
+import { UserRequest } from 'src/decorator/user.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { LoginDto } from 'src/http/dtos/login.user.dto'
+import type { PreferencesDTO } from 'src/http/dtos/preferences.dto'
 import { UserService } from 'src/services/user/user.service'
 
 @Controller('user')
@@ -26,5 +37,11 @@ export class UserController {
   @Post('register')
   async register(@Body() data) {
     return this.userService.register(data)
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('preferences')
+  async preferences(@Body() data: PreferencesDTO, @UserRequest() user: User) {
+    return this.userService.preferences(data, user)
   }
 }

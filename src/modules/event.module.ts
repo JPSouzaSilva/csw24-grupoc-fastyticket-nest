@@ -9,5 +9,6 @@ import { PrismaService } from 'src/services/prisma.service'
   imports: [UserModule],
   controllers: [EventController],
   providers: [EventService, EventRepository, PrismaService],
+  exports: [EventService],
 })
 export class EventModule {}
