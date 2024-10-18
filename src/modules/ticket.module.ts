@@ -4,9 +4,10 @@ import { TicketService } from 'src/services/ticket/ticket.service'
 import { UserModule } from './user.module'
 import { TicketRepository } from 'src/repositories/ticket/ticket.repository'
 import { PrismaService } from 'src/services/prisma.service'
+import { TransactionModule } from './transaction.module'
 
 @Module({
-  imports: [UserModule],
+  imports: [UserModule, TransactionModule],
   controllers: [TicketController],
   providers: [TicketService, TicketRepository, PrismaService],
 })

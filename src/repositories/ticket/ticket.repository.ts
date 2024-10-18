@@ -36,6 +36,15 @@ export class TicketRepository implements ITicketRepository {
     })
   }
 
+  findAvaiableByEventId(eventId: string): Promise<Ticket[]> {
+    return this.prisma.ticket.findMany({
+      where: {
+        eventId,
+        status: 'DISPONIVEL',
+      },
+    })
+  }
+
   create(data: Prisma.TicketCreateInput): Promise<Ticket> {
     return this.prisma.ticket.create({ data })
   }

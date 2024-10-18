@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common'
 export class EventRepository implements IEventRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateEventDto, tenantId: string) {
+  async create(data: CreateEventDto, tenantId: string, userId: string) {
     return this.prisma.event.create({
       data: {
         name: data.name,
@@ -18,6 +18,11 @@ export class EventRepository implements IEventRepository {
         tenant: {
           connect: {
             id: tenantId,
+          },
+        },
+        owner: {
+          connect: {
+            id: userId,
           },
         },
       },

@@ -40,7 +40,7 @@ export class EventService {
       throw new Error('User not authorized')
     }
 
-    return this.eventRepository.create(data, user.tenantId)
+    return this.eventRepository.create(data, user.tenantId, user.id)
   }
 
   async update(data: UpdateEventDTO) {

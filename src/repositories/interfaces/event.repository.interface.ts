@@ -4,7 +4,12 @@ import { PaginatedEventsDto } from 'src/http/dtos/paginated.event.dto'
 import { UpdateEventDTO } from 'src/http/dtos/update.event.dto'
 
 export abstract class IEventRepository {
-  abstract create(data: CreateEventDto, tenantId: string): Promise<Event>
+  abstract create(
+    data: CreateEventDto,
+    tenantId: string,
+    userId: string,
+  ): Promise<Event>
+
   abstract findAll(
     page: number,
     limit: number,

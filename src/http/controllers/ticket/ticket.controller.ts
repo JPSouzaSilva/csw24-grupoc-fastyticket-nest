@@ -35,7 +35,7 @@ export class TicketController {
     return this.ticketService.buyTicket(buyTicketDTO, user)
   }
 
-  @Put('authentic')
+  @Put('authenticate')
   authenticTicket(
     @Body() authenticTicketDto: AuthenticTicketDto,
     @UserRequest() user: User,
