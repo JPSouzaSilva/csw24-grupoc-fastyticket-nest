@@ -23,8 +23,7 @@ model User {
   id            String        @id @unique @default(uuid())
   name          String        @unique
   email         String        @unique
-  password      String
-  firebaseToken String?        @unique @map("firebase_token")
+  firebaseToken String?       @unique @map("firebase_token")
   tenantId      String?       @map("tenant_id")
   role          String        
   Ticket        Ticket[]

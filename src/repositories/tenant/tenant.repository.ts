@@ -23,6 +23,23 @@ export class TenantRepository implements ITenantRepository {
   }
 
   async create(data: Prisma.TenantCreateInput) {
-    return this.prisma.tenant.create({ data })
+    if (typeof data.userId === 'string') {
+      return this.prisma.tenant.create({
+        data: {
+          name: data.name,
+          contactInfo: data.contactInfo,
+          userId: {
+            connect: {
+              id: data.userId,
+            },
+          },
+          Event: data.Event,
+          Ticket: data.Ticket,
+          Transaction: data.Transaction,
+        },
+      })
+    } else {
+      return this.prisma.tenant.create({ data })
+    }
   }
 }
