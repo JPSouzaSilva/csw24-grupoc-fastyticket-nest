@@ -5,11 +5,11 @@ import { TransactionRepository } from 'src/repositories/transaction/transaction.
 @Injectable()
 export class TransactionService {
   constructor(private readonly transactionRepository: TransactionRepository) {}
-  create(createTransactionDto: CreateTransactionDto) {
+  async create(createTransactionDto: CreateTransactionDto) {
     const { price, date, status, tenantId, userId, ticketId } =
       createTransactionDto
 
-    return this.transactionRepository.createTransaction({
+    return await this.transactionRepository.createTransaction({
       price,
       dateTransaction: date,
       status,

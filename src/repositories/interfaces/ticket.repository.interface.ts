@@ -16,5 +16,5 @@ export abstract class ITicketRepository {
   abstract findAvaiableByEventId(
     eventId: string,
     ticketId: string,
-  ): Promise<Ticket[]>
+  ): Promise<Ticket>
 }

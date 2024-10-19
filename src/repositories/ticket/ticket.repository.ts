@@ -37,8 +37,8 @@ export class TicketRepository implements ITicketRepository {
     })
   }
 
-  findAvaiableByEventId(eventId: string, ticketId: string): Promise<Ticket[]> {
-    return this.prisma.ticket.findMany({
+  findAvaiableByEventId(eventId: string, ticketId: string): Promise<Ticket> {
+    return this.prisma.ticket.findUnique({
       where: {
         eventId,
         id: ticketId,

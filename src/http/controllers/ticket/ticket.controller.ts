@@ -9,12 +9,11 @@ import {
   Put,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import type { User } from '@prisma/client'
 import { UserRequest } from 'src/decorator/user.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
 import type { AuthenticTicketDto } from 'src/http/dtos/authentic.ticket.dto'
 import { CreateTicketDto } from 'src/http/dtos/create.ticket.dto'
-import { TicketBuyDto } from 'src/http/dtos/ticketBuy.dto'
+import { TicketBuyDto } from 'src/http/dtos/buy.ticket.dto'
 import { TicketService } from 'src/services/ticket/ticket.service'
 
 @Controller('ticket')

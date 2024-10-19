@@ -3,13 +3,14 @@ import { CreateTicketDto } from 'src/http/dtos/create.ticket.dto'
 import { UserService } from '../user/user.service'
 import { TicketRepository } from 'src/repositories/ticket/ticket.repository'
 import { randomUUID } from 'crypto'
-import type { TicketBuyDto } from 'src/http/dtos/ticketBuy.dto'
+import type { TicketBuyDto } from 'src/http/dtos/buy.ticket.dto'
 import { Status } from 'src/lib/status.enum'
 import type { Ticket, User } from '@prisma/client'
 import type { SellTicketDto } from 'src/http/dtos/sell.ticket.dto'
 import type { AuthenticTicketDto } from 'src/http/dtos/authentic.ticket.dto'
 import { TransactionService } from '../transaction/transaction.service'
 import { EventService } from '../event/event.service'
+import { log } from 'console'
 
 @Injectable()
 export class TicketService {
@@ -59,13 +60,12 @@ export class TicketService {
     return tickets
   }
 
-  async buyTicket(buyTicketDTO: TicketBuyDto, user) {
-    console.log(user)
-    const user2 = await this.userService.findByEmailOrUsername(
-      user.username,
-      user.email,
+  async buyTicket(buyTicketDTO: TicketBuyDto, req) {
+    const user = await this.userService.findByEmailOrUsername(
+      req.username,
+      req.email,
     )
-    this.validateUser(user2)
+    this.validateUser(user)
 
     const { eventId, tickets } = buyTicketDTO
     const event = await this.findByEventId(eventId)
@@ -74,7 +74,7 @@ export class TicketService {
     }
 
     const ticketsAvailable = await this.getAvailableTickets(eventId, tickets)
-    return await this.processTicketPurchase(ticketsAvailable, tickets, user2)
+    return await this.processTicketPurchase(ticketsAvailable, tickets, user)
   }
 
   private validateUser(user: User): void {
@@ -87,8 +87,24 @@ export class TicketService {
     eventId: string,
     tickets: string[],
   ): Promise<Ticket[]> {
+    const ticketsAvailable = []
 
-    for 
+    for (let i = 0; i < tickets.length; i++) {
+      const ticket = await this.ticketRepository.findAvaiableByEventId(
+        eventId,
+        tickets[i],
+      )
+      if (!ticket) {
+        throw new NotFoundException('Ticket not Found')
+      }
+      if (ticket.status !== Status.Disponivel) {
+        throw new NotFoundException('Ticket not available')
+      }
+
+      ticketsAvailable.push(ticket)
+    }
+
+    return ticketsAvailable
   }
 
   private async processTicketPurchase(
@@ -115,6 +131,7 @@ export class TicketService {
   }
 
   private async createTransaction(ticket: Ticket, user: User): Promise<string> {
+    log('Creating transaction')
     await this.transactionService.create({
       price: ticket.price,
       date: new Date(),
