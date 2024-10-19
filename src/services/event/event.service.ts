@@ -36,11 +36,11 @@ export class EventService {
       throw new Error('User not found')
     }
 
-    if (user.role !== 'ADMIN' || !user.tenantId) {
+    if (!user.tenantId) {
       throw new Error('User not authorized')
     }
 
-    return this.eventRepository.create(data, user.tenantId)
+    return this.eventRepository.create(data, user.tenantId, user.id)
   }
 
   async update(data: UpdateEventDTO) {

@@ -3,8 +3,9 @@ import { UserRepository } from 'src/repositories/user/user.repository'
 import { AuthService } from '../auth/auth.service'
 import { LoginDto } from 'src/http/dtos/login.user.dto'
 import { RegisterUserDto } from 'src/http/dtos/register.user.dto'
-import type { User } from '@prisma/client'
 import type { PreferencesDTO } from 'src/http/dtos/preferences.dto'
+import { Role } from 'src/lib/role.enum'
+import { User } from '@prisma/client'
 
 @Injectable()
 export class UserService {
@@ -23,7 +24,17 @@ export class UserService {
   }
 
   async register(data: RegisterUserDto) {
-    return this.userRepository.create(data)
+    const userCreateInput = {
+      name: data.name,
+      email: data.email,
+      role: data.role === Role.ADMIN ? Role.ADMIN : Role.USER,
+      Tenant: {
+        connect: {
+          id: data.tenantId,
+        },
+      },
+    }
+    return this.userRepository.create(userCreateInput)
   }
 
   async preferences(preferenceDto: PreferencesDTO, user: User) {

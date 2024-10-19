@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ITicketRepository } from '../interfaces/ticket.repository.interface'
 import { PrismaService } from 'src/services/prisma.service'
 import { Prisma, Ticket } from '@prisma/client'
+import { Status } from 'src/lib/status.enum'
 
 @Injectable()
 export class TicketRepository implements ITicketRepository {
@@ -32,6 +33,16 @@ export class TicketRepository implements ITicketRepository {
     return this.prisma.ticket.findMany({
       where: {
         eventId,
+      },
+    })
+  }
+
+  findAvaiableByEventId(eventId: string, ticketId: string): Promise<Ticket> {
+    return this.prisma.ticket.findUnique({
+      where: {
+        eventId,
+        id: ticketId,
+        status: Status.Disponivel,
       },
     })
   }

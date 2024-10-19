@@ -46,9 +46,9 @@ model Event {
   tenantId    String
 
   tenant Tenant   @relation(fields: [tenantId], references: [id])
-  owner  User     @relation(fields: [userId], references: [id])
+  owner  User     @relation(fields: [ownerId], references: [id])
   Ticket Ticket[]
-  userId String
+  ownerId String
 
   @@map("events")
 }
@@ -62,9 +62,10 @@ model Ticket {
   code     String @unique
   status   String
 
-  user   User   @relation(fields: [userId], references: [id])
-  event  Event  @relation(fields: [eventId], references: [id])
-  tenant Tenant @relation(fields: [tenantId], references: [id])
+  user        User          @relation(fields: [userId], references: [id])
+  event       Event         @relation(fields: [eventId], references: [id])
+  tenant      Tenant        @relation(fields: [tenantId], references: [id])
+  Transaction Transaction?
 
   @@map("tickets")
 }
@@ -76,10 +77,11 @@ model Transaction {
   status          String
   tenantId        String
   userId          String
-  date            DateTime @default(now())
+  ticketId        String   @unique
 
-  tenant Tenant @relation(fields: [tenantId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+  ticket   Ticket @relation(fields: [ticketId], references: [id])
 
   @@map("transactions")
 }
@@ -111,4 +113,10 @@ model PrivacyConfig {
 enum Role {
   ADMIN
   USER
+}
+
+enum StatusTicket {
+  DISPONIVEL
+  RESERVADO
+  VENDIDO
 }
