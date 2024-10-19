@@ -1,8 +1,10 @@
 import { Body, Controller, Delete, Post, Put } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { Prisma } from '@prisma/client'
 import { TenantService } from 'src/services/tenant/tenant.service'
 
 @Controller('tenant')
+@ApiTags('Tenant')
 export class TenantController {
   constructor(private readonly tenantService: TenantService) {}
   @Post('create')

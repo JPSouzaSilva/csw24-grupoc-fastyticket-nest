@@ -7,7 +7,7 @@ import { AuthService } from 'src/services/auth/auth.service'
     JwtModule.register({
       global: true,
       secret: 'xanflis',
-      signOptions: { expiresIn: '10m' },
+      signOptions: { expiresIn: '60m' },
     }),
   ],
   providers: [AuthService],

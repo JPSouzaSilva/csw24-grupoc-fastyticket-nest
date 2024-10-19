@@ -9,6 +9,7 @@ import type { Ticket, User } from '@prisma/client'
 import type { SellTicketDto } from 'src/http/dtos/sell.ticket.dto'
 import type { AuthenticTicketDto } from 'src/http/dtos/authentic.ticket.dto'
 import { TransactionService } from '../transaction/transaction.service'
+import { EventService } from '../event/event.service'
 
 @Injectable()
 export class TicketService {
@@ -16,6 +17,7 @@ export class TicketService {
     private readonly userService: UserService,
     private readonly ticketRepository: TicketRepository,
     private readonly transactionService: TransactionService,
+    private readonly eventService: EventService,
   ) {}
 
   async findByEventId(id: string) {
@@ -57,8 +59,13 @@ export class TicketService {
     return tickets
   }
 
-  async buyTicket(buyTicketDTO: TicketBuyDto, user: User) {
-    this.validateUser(user)
+  async buyTicket(buyTicketDTO: TicketBuyDto, user) {
+    console.log(user)
+    const user2 = await this.userService.findByEmailOrUsername(
+      user.username,
+      user.email,
+    )
+    this.validateUser(user2)
 
     const { eventId, tickets } = buyTicketDTO
     const event = await this.findByEventId(eventId)
@@ -67,7 +74,7 @@ export class TicketService {
     }
 
     const ticketsAvailable = await this.getAvailableTickets(eventId, tickets)
-    return await this.processTicketPurchase(ticketsAvailable, tickets, user)
+    return await this.processTicketPurchase(ticketsAvailable, tickets, user2)
   }
 
   private validateUser(user: User): void {
@@ -76,24 +83,12 @@ export class TicketService {
     }
   }
 
-  private async getAvailableTickets(
+  async getAvailableTickets(
     eventId: string,
     tickets: string[],
   ): Promise<Ticket[]> {
-    const allTicketsAvailable = await this.findAllTicketAvailable()
 
-    const ticketsAvailable = allTicketsAvailable.filter(
-      (ticket) =>
-        ticket.eventId === eventId &&
-        ticket.status === Status.Disponivel &&
-        tickets.includes(ticket.id),
-    )
-
-    if (ticketsAvailable.length < tickets.length) {
-      throw new NotFoundException('Tickets not available')
-    }
-
-    return ticketsAvailable
+    for 
   }
 
   private async processTicketPurchase(
@@ -119,7 +114,7 @@ export class TicketService {
     return ticketsBought
   }
 
-  private async createTransaction(ticket: Ticket, user: User): Promise<void> {
+  private async createTransaction(ticket: Ticket, user: User): Promise<string> {
     await this.transactionService.create({
       price: ticket.price,
       date: new Date(),
@@ -128,6 +123,8 @@ export class TicketService {
       userId: user.id,
       ticketId: ticket.id,
     })
+
+    return 'Transaction created'
   }
 
   async sellTicket(sellTicketDto: SellTicketDto, user: User) {
@@ -158,15 +155,32 @@ export class TicketService {
       },
     })
 
-    return newTicket
+    return {
+      id: newTicket.id,
+      code: newTicket.code,
+      price: newTicket.price,
+      status: newTicket.status,
+    }
   }
 
   async authenticTicket(authenticTicketDto: AuthenticTicketDto, user: User) {
     if (!user) {
       throw new NotFoundException('User not Found')
     }
+    console.log(user)
 
     // Todo: Check if user is the owner of event
+
+    const event = await this.eventService.findById(authenticTicketDto.eventId)
+    if (!event) {
+      throw new NotFoundException('Event not Found')
+    }
+    const isOwner = event.ownerId === user.id
+    console.log(isOwner)
+    console.log(user.id)
+    if (!isOwner) {
+      throw new NotFoundException('User not allowed to authenticate ticket')
+    }
 
     const { code, userId, eventId } = authenticTicketDto
 

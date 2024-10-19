@@ -27,13 +27,11 @@ export class UserService {
       name: data.name,
       email: data.email,
       role: data.role === 'ADMIN' ? Role.ADMIN : Role.USER,
-      tenant: {
+      Tenant: {
         connect: {
           id: data.tenantId,
         },
       },
-      NotificationPreferences: null,
-      PrivacyConfig: null,
     }
     return this.userRepository.create(userCreateInput)
   }

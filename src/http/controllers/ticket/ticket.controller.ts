@@ -8,14 +8,17 @@ import {
   Param,
   Put,
 } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import type { User } from '@prisma/client'
 import { UserRequest } from 'src/decorator/user.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
 import type { AuthenticTicketDto } from 'src/http/dtos/authentic.ticket.dto'
 import { CreateTicketDto } from 'src/http/dtos/create.ticket.dto'
+import { TicketBuyDto } from 'src/http/dtos/ticketBuy.dto'
 import { TicketService } from 'src/services/ticket/ticket.service'
 
 @Controller('ticket')
+@ApiTags('Ticket')
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
 
@@ -30,16 +33,21 @@ export class TicketController {
     return this.ticketService.findByEventId(id)
   }
 
+  @UseGuards(AuthGuard)
   @Post('buy')
-  buyTicket(@Body() buyTicketDTO, @UserRequest() user: User) {
-    return this.ticketService.buyTicket(buyTicketDTO, user)
+  buyTicket(@Request() req, @Body() buyTicketDTO: TicketBuyDto) {
+    console.log(buyTicketDTO)
+    return this.ticketService.buyTicket(buyTicketDTO, req.user)
   }
 
   @Put('authenticate')
+  @UseGuards(AuthGuard)
   authenticTicket(
+    @UserRequest() user,
     @Body() authenticTicketDto: AuthenticTicketDto,
-    @UserRequest() user: User,
   ) {
+    console.log(user)
+    console.log(authenticTicketDto)
     return this.ticketService.authenticTicket(authenticTicketDto, user)
   }
 }

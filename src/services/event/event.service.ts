@@ -36,7 +36,7 @@ export class EventService {
       throw new Error('User not found')
     }
 
-    if (user.role !== 'ADMIN' || !user.tenantId) {
+    if (!user.tenantId) {
       throw new Error('User not authorized')
     }
 
