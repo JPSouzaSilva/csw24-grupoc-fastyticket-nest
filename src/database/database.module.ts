@@ -17,12 +17,12 @@ import { NotificationPreferencesRepository } from './prisma/repositories/notific
   providers: [
     PrismaService,
     {
-      provide: ITenantRepository,
-      useClass: TenantRepository,
-    },
-    {
       provide: IUserRepository,
       useClass: UserRepository,
+    },
+    {
+      provide: ITenantRepository,
+      useClass: TenantRepository,
     },
     {
       provide: IEventRepository,

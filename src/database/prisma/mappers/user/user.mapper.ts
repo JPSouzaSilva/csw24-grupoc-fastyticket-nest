@@ -9,6 +9,7 @@ export class UserMapper {
         name: user.name,
         role: user.role,
         tenantId: user.tenantId,
+        rate: user.rate,
       },
       user.userId,
     )
@@ -21,6 +22,7 @@ export class UserMapper {
       name: user.name,
       role: user.role,
       tenantId: user.tenantId,
+      rate: user.rate,
     }
   }
 }

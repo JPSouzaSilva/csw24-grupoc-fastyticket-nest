@@ -189,4 +189,8 @@ export class TicketService {
 
     return this.ticketRepository.update(ticketId, newTicket)
   }
+
+  async findByEventId(eventId: string) {
+    return this.ticketRepository.findByEventId(eventId)
+  }
 }

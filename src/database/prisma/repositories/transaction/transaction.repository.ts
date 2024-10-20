@@ -7,6 +7,20 @@ import { TransactionMapper } from '../../mappers/transaction/transaction.mapper'
 @Injectable()
 export class TransactionRepository implements ITransactionRepository {
   constructor(private readonly prisma: PrismaService) {}
+  async findById(id: string): Promise<Transaction | null> {
+    const transaction = await this.prisma.transaction.findUnique({
+      where: {
+        transactionId: id,
+      },
+    })
+
+    if (!transaction) {
+      return null
+    }
+
+    return TransactionMapper.toDomain(transaction)
+  }
+
   async create(transaction: Transaction): Promise<Transaction> {
     const transactionCreated = await this.prisma.transaction.create({
       data: {
