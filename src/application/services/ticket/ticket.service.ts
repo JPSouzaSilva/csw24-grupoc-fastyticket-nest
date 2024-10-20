@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { CreateTicketDto } from 'src/http/dtos/ticket/create.ticket.dto'
 import { UserService } from '../user/user.service'
 import { randomUUID } from 'crypto'
@@ -158,5 +162,31 @@ export class TicketService {
     })
 
     return this.ticketRepository.update(ticket.id, newTicket)
+  }
+
+  async refundTicket(ticketId: string, userToRequest: User) {
+    const ticket = await this.ticketRepository.findById(ticketId)
+    if (!ticket) {
+      throw new NotFoundException('Ticket not found')
+    }
+
+    if (ticket.status !== 'Disponivel') {
+      throw new NotFoundException('Ticket is not available for refund')
+    }
+
+    if (ticket.sellerId !== userToRequest.id) {
+      throw new UnauthorizedException('You are not the owner of this ticket')
+    }
+
+    const newTicket = new Ticket({
+      code: ticket.code,
+      price: ticket.price,
+      status: 'Disponivel',
+      eventId: ticket.eventId,
+      tenantId: ticket.tenantId,
+      sellerId: null,
+    })
+
+    return this.ticketRepository.update(ticketId, newTicket)
   }
 }

@@ -21,4 +21,8 @@ export class TransactionService {
 
     return this.transactionRepository.create(transaction)
   }
+
+  async findById(id: string) {
+    return this.transactionRepository.findById(id)
+  }
 }
