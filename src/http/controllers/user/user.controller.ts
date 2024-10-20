@@ -3,23 +3,25 @@ import {
   Get,
   Post,
   Body,
-  Request,
   UseGuards,
   Put,
+  Query,
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import type { User } from '@prisma/client'
-import { log } from 'console'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserRequest } from 'src/decorator/user.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { LoginDto } from 'src/http/dtos/login.user.dto'
-import { PreferencesDTO } from 'src/http/dtos/preferences.dto'
-import { UserService } from 'src/services/user/user.service'
+import { UserService } from 'src/application/services/user/user.service'
+import { RegisterUserDto } from 'src/http/dtos/user/register.user.dto'
+import { NotificationService } from 'src/application/services/notification/notification.service'
 
 @Controller('user')
 @ApiTags('User')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   @ApiOperation({
     summary: 'Login do Usuário',
@@ -62,12 +64,10 @@ export class UserController {
   })
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
-    log(loginDto)
     return this.userService.login(loginDto)
   }
 
   @UseGuards(AuthGuard)
-  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Perfil do Usuário',
     description: 'Informações do perfil do usuário.'
@@ -92,11 +92,8 @@ export class UserController {
     }
   })
   @Get('profile')
-  async getUser(@Request() req) {
-    return this.userService.findByEmailOrUsername(
-      req.user.username,
-      req.user.email,
-    )
+  async getUser(@UserRequest() req) {
+    return this.userService.findByEmailOrUsername(req.name, req.email)
   }
 
   @ApiOperation({
@@ -133,12 +130,11 @@ export class UserController {
     },
   })
   @Post('register')
-  async register(@Body() data) {
+  async register(@Body() data: RegisterUserDto) {
     return this.userService.register(data)
   }
 
   @UseGuards(AuthGuard)
-  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Preferências do Usuário',
     description: 'Atualiza as preferências de um usuário.',
@@ -164,7 +160,6 @@ export class UserController {
   @ApiBody({
     description: 'Dados de preferências do usuário',
     required: true,
-    type: PreferencesDTO,
     examples: {
       example1: {
         summary: 'Exemplo de Preferências',
@@ -175,7 +170,7 @@ export class UserController {
     },
   })
   @Put('preferences')
-  async preferences(@Body() data: PreferencesDTO, @UserRequest() user: User) {
-    return this.userService.preferences(data, user)
+  async preferences(@UserRequest() req, @Query('notify') notify: boolean) {
+    return this.notificationService.preference(req.id, notify)
   }
 }

@@ -9,12 +9,11 @@ import {
   Put
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiBody } from '@nestjs/swagger'
-import { UserRequest } from 'src/decorator/user.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
-import { AuthenticTicketDto } from 'src/http/dtos/authentic.ticket.dto'
-import { CreateTicketDto } from 'src/http/dtos/create.ticket.dto'
-import { TicketBuyDto } from 'src/http/dtos/buy.ticket.dto'
-import { TicketService } from 'src/services/ticket/ticket.service'
+import { AuthenticTicketDto } from 'src/http/dtos/ticket/authentic.ticket.dto'
+import { CreateTicketDto } from 'src/http/dtos/ticket/create.ticket.dto'
+import { TicketService } from 'src/application/services/ticket/ticket.service'
+import { TicketBuyDto } from 'src/http/dtos/ticket/buy.ticket.dto'
 
 @Controller('ticket')
 @ApiTags('Ticket')
@@ -64,7 +63,7 @@ export class TicketController {
   })
   @Post('create')
   create(@Request() req, @Body() createTicketDto: CreateTicketDto) {
-    return this.ticketService.create(createTicketDto, req)
+    return this.ticketService.create(createTicketDto, req.user)
   }
 
   @ApiOperation({
@@ -138,7 +137,6 @@ export class TicketController {
   })
   @Post('buy')
   buyTicket(@Request() req, @Body() buyTicketDTO: TicketBuyDto) {
-    console.log(buyTicketDTO)
     return this.ticketService.buyTicket(buyTicketDTO, req.user)
   }
 
@@ -176,12 +174,7 @@ export class TicketController {
     }
   })
   @Put('authenticate')  
-  authenticTicket(
-    @UserRequest() user,
-    @Body() authenticTicketDto: AuthenticTicketDto,
-  ) {
-    console.log(user)
-    console.log(authenticTicketDto)
-    return this.ticketService.authenticTicket(authenticTicketDto, user)
+  authenticTicket(@Body() authenticTicketDto: AuthenticTicketDto) {
+    return this.ticketService.authenticate(authenticTicketDto)
   }
 }

@@ -8,12 +8,11 @@ import {
   Query,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger'
-import { Roles } from 'src/decorator/roles.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
-import { CreateEventDto } from 'src/http/dtos/create.event.dto'
+import { CreateEventDto } from 'src/http/dtos/event/create.event.dto'
+import { EventService } from 'src/application/services/event/event.service'
+import { Roles } from 'src/decorator/roles.decorator'
 import { Role } from 'src/lib/role.enum'
-import { EventService } from 'src/services/event/event.service'
-
 @UseGuards(AuthGuard)
 @Controller('event')
 @ApiTags('Event')
@@ -65,8 +64,8 @@ export class EventController {
     }
   })
   @Post('create')
-  create(@Request() req, @Body() createEventDto: CreateEventDto) {
-    return this.eventService.create(req, createEventDto)
+  async create(@Request() req, @Body() createEventDto: CreateEventDto) {
+    return this.eventService.create(createEventDto, req.user)
   }
 
   @ApiOperation({
