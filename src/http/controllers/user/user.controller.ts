@@ -14,34 +14,35 @@ import { AuthGuard } from 'src/guard/auth.guard'
 import { LoginDto } from 'src/http/dtos/login.user.dto'
 import type { PreferencesDTO } from 'src/http/dtos/preferences.dto'
 import { UserService } from 'src/application/services/user/user.service'
+import { RegisterUserDto } from 'src/http/dtos/user/register.user.dto'
+import { NotificationService } from 'src/application/services/notification/notification.service'
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
-    log(loginDto)
     return this.userService.login(loginDto)
   }
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  async getUser(@Request() req) {
-    return this.userService.findByEmailOrUsername(
-      req.user.username,
-      req.user.email,
-    )
+  async getUser(@UserRequest() req) {
+    return this.userService.findByEmailOrUsername(req.name, req.email)
   }
 
   @Post('register')
-  async register(@Body() data) {
+  async register(@Body() data: RegisterUserDto) {
     return this.userService.register(data)
   }
 
   @UseGuards(AuthGuard)
   @Put('preferences')
-  async preferences(@Body() data: PreferencesDTO, @UserRequest() user: User) {
-    return this.userService.preferences(data, user)
+  async preferences(@UserRequest() req, @Body() preferences: PreferencesDTO) {
+    return this.notificationService.preference(req.id, preferences)
   }
 }
