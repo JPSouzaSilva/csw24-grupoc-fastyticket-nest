@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { Tenant } from 'src/application/models/Tenant'
-import type { ITenantRepository } from 'src/application/repositories/tenant.repository.interface'
+import { ITenantRepository } from 'src/application/repositories/tenant.repository.interface'
 import type { CreateTenantDTO } from 'src/http/dtos/tenant/create.tenant.dto'
 import type { UpdateTenantDTO } from 'src/http/dtos/tenant/update.tenant.dto'
 

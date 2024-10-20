@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { INotificationPreferencesRepository } from 'src/application/repositories/notification.preferences.repository.interface'
-import type { PrismaService } from '../../prisma.service'
 import { NotificationPreferences } from 'src/application/models/NotificationPreferences'
 import { NotificationPreferencesMapper } from '../../mappers/notification/notification.mapper'
+import { PrismaService } from '../../prisma.service'
 
 @Injectable()
 export class NotificationPreferencesRepository

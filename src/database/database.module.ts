@@ -6,12 +6,12 @@ import { UserRepository } from './prisma/repositories/user/user.repository'
 import { IEventRepository } from 'src/application/repositories/event.repository.interface'
 import { ITicketRepository } from 'src/application/repositories/ticket.repository.interface'
 import { ITransactionRepository } from 'src/application/repositories/transaction.repository.interface'
+import { INotificationPreferencesRepository } from 'src/application/repositories/notification.preferences.repository.interface'
+import { PrismaService } from './prisma/prisma.service'
+import { NotificationPreferencesRepository } from './prisma/repositories/notification/notification.repository'
+import { TransactionRepository } from './prisma/repositories/transaction/transaction.repository'
 import { EventRepository } from './prisma/repositories/event/event.repository'
 import { TicketRepository } from './prisma/repositories/ticket/ticket.repository'
-import { TransactionRepository } from './prisma/repositories/transaction/transaction.repository'
-import { PrismaService } from './prisma/prisma.service'
-import { INotificationPreferencesRepository } from 'src/application/repositories/notification.preferences.repository.interface'
-import { NotificationPreferencesRepository } from './prisma/repositories/notification/notification.repository'
 
 @Module({
   providers: [
@@ -29,12 +29,12 @@ import { NotificationPreferencesRepository } from './prisma/repositories/notific
       useClass: EventRepository,
     },
     {
-      provide: ITransactionRepository,
-      useClass: TransactionRepository,
-    },
-    {
       provide: ITicketRepository,
       useClass: TicketRepository,
+    },
+    {
+      provide: ITransactionRepository,
+      useClass: TransactionRepository,
     },
     {
       provide: INotificationPreferencesRepository,
@@ -42,8 +42,8 @@ import { NotificationPreferencesRepository } from './prisma/repositories/notific
     },
   ],
   exports: [
-    ITenantRepository,
     IUserRepository,
+    ITenantRepository,
     IEventRepository,
     ITransactionRepository,
     ITicketRepository,

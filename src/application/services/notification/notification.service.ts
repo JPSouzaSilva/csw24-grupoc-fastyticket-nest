@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { NotificationPreferences } from 'src/application/models/NotificationPreferences'
-import type { INotificationPreferencesRepository } from 'src/application/repositories/notification.preferences.repository.interface'
+import { INotificationPreferencesRepository } from 'src/application/repositories/notification.preferences.repository.interface'
 import type { CreateNotificationDto } from 'src/http/dtos/notification/create.notification'
 
 @Injectable()

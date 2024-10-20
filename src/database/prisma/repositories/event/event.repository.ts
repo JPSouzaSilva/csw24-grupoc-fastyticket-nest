@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import type { IEventRepository } from 'src/application/repositories/event.repository.interface'
-import type { PrismaService } from '../../prisma.service'
 import type { Event } from 'src/application/models/Event'
 import type { PaginatedEventsDto } from 'src/http/dtos/paginated.event.dto'
 import { EventMapper } from '../../mappers/event/event.mapper'
+import { PrismaService } from '../../prisma.service'
 
 @Injectable()
 export class EventRepository implements IEventRepository {

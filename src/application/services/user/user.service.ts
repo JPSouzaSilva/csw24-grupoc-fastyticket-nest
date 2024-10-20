@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { AuthService } from '../auth/auth.service'
-import { LoginDto } from 'src/http/dtos/login.user.dto'
-import type { IUserRepository } from 'src/application/repositories/user.repository.interface'
-import type { RegisterUserDto } from 'src/http/dtos/user/register.user.dto'
-import { User } from 'src/application/models/User'
-import type { NotificationService } from '../notification/notification.service'
 import { NotificationPreferences } from 'src/application/models/NotificationPreferences'
+import { User } from 'src/application/models/User'
+import { IUserRepository } from 'src/application/repositories/user.repository.interface'
+import { LoginDto } from 'src/http/dtos/login.user.dto'
+import { RegisterUserDto } from 'src/http/dtos/user/register.user.dto'
+import { AuthService } from '../auth/auth.service'
+import { NotificationService } from '../notification/notification.service'
 
 @Injectable()
 export class UserService {

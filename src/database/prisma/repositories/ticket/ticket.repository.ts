@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import type { ITicketRepository } from 'src/application/repositories/ticket.repository.interface'
-import type { PrismaService } from '../../prisma.service'
 import { Ticket } from 'src/application/models/Ticket'
 import { TicketMapper } from '../../mappers/ticket/ticket.mapper'
+import { PrismaService } from '../../prisma.service'
 
 @Injectable()
 export class TicketRepository implements ITicketRepository {

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import type { ITenantRepository } from 'src/application/repositories/tenant.repository.interface'
-import type { PrismaService } from '../../prisma.service'
 import { Tenant } from 'src/application/models/Tenant'
 import { TenantMapper } from '../../mappers/tenant/tenant.mapper'
+import { PrismaService } from '../../prisma.service'
 
 @Injectable()
 export class TenantRepository implements ITenantRepository {

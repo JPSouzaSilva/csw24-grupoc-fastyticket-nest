@@ -1,17 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreateEventDto } from 'src/http/dtos/event/create.event.dto'
 import { UpdateEventDTO } from 'src/http/dtos/event/update.event.dto'
-import { UserService } from '../user/user.service'
-import type { IEventRepository } from 'src/application/repositories/event.repository.interface'
 import { Event } from 'src/application/models/Event'
 import type { User } from 'src/application/models/User'
+import { IEventRepository } from 'src/application/repositories/event.repository.interface'
 
 @Injectable()
 export class EventService {
-  constructor(
-    private readonly eventRepository: IEventRepository,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly eventRepository: IEventRepository) {}
 
   async findAll(page: number, limit: number) {
     return this.eventRepository.findAll(page, limit)

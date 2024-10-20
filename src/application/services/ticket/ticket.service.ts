@@ -4,11 +4,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common'
 import { CreateTicketDto } from 'src/http/dtos/ticket/create.ticket.dto'
-import { UserService } from '../user/user.service'
 import { randomUUID } from 'crypto'
 import { TransactionService } from '../transaction/transaction.service'
 import { EventService } from '../event/event.service'
-import type { ITicketRepository } from 'src/application/repositories/ticket.repository.interface'
 import { Ticket } from 'src/application/models/Ticket'
 import type { User } from 'src/application/models/User'
 import type { TicketSellDto } from 'src/http/dtos/ticket/sell.ticket.dto'
@@ -16,11 +14,11 @@ import type { TicketBuyDto } from 'src/http/dtos/ticket/buy.ticket.dto'
 import type { CreateTransactionDto } from 'src/http/dtos/transaction/create.transaction.dto'
 import { Transaction } from 'src/application/models/Transaction'
 import type { AuthenticTicketDto } from 'src/http/dtos/ticket/authentic.ticket.dto'
+import { ITicketRepository } from 'src/application/repositories/ticket.repository.interface'
 
 @Injectable()
 export class TicketService {
   constructor(
-    private readonly userService: UserService,
     private readonly ticketRepository: ITicketRepository,
     private readonly transactionService: TransactionService,
     private readonly eventService: EventService,

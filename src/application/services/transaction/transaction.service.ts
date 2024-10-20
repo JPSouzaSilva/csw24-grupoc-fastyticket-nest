@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Transaction } from 'src/application/models/Transaction'
-import type { ITransactionRepository } from 'src/application/repositories/transaction.repository.interface'
+import { ITransactionRepository } from 'src/application/repositories/transaction.repository.interface'
 import { CreateTransactionDto } from 'src/http/dtos/transaction/create.transaction.dto'
 
 @Injectable()
