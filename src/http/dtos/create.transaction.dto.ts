@@ -1,8 +1,8 @@
 export class CreateTransactionDto {
-  price: number
-  date: Date | string
-  status: string
   tenantId: string
-  userId: string
+  buyerId: string
   ticketId: string
+  price: number
+  dateTransaction: Date
+  status: string
 }

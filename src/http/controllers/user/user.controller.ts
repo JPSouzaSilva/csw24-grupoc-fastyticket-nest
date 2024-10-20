@@ -13,7 +13,7 @@ import { UserRequest } from 'src/decorator/user.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { LoginDto } from 'src/http/dtos/login.user.dto'
 import type { PreferencesDTO } from 'src/http/dtos/preferences.dto'
-import { UserService } from 'src/services/user/user.service'
+import { UserService } from 'src/application/services/user/user.service'
 
 @Controller('user')
 export class UserController {
