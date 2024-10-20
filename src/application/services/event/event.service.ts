@@ -17,7 +17,6 @@ export class EventService {
     return this.eventRepository.findById(id)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async create(data: CreateEventDto, userToRequest: User) {
     const { name, dateAndTime, location, type } = data
 
