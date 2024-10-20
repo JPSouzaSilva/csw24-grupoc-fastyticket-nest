@@ -1,14 +1,10 @@
 import { randomUUID } from 'crypto'
 
-export interface PrivacyConfig {
-  paymentPreference: string
-  notification: boolean
-}
-
 export interface TenantProps {
   name: string
   contactInfo: string
-  privacyConfig: PrivacyConfig
+  paymentPreference: string
+  notification: boolean
 }
 
 export class Tenant {
@@ -40,11 +36,19 @@ export class Tenant {
     this.props.contactInfo = contactInfo
   }
 
-  public get privacyConfig(): PrivacyConfig {
-    return this.props.privacyConfig
+  public get paymentPreference(): string {
+    return this.props.paymentPreference
   }
 
-  public set privacyConfig(privacyConfig: PrivacyConfig) {
-    this.props.privacyConfig = privacyConfig
+  public set paymentPreference(paymentPreference: string) {
+    this.props.paymentPreference = paymentPreference
+  }
+
+  public get notification(): boolean {
+    return this.props.notification
+  }
+
+  public set notification(notification: boolean) {
+    this.props.notification = notification
   }
 }

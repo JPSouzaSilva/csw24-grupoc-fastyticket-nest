@@ -11,8 +11,8 @@ import {
 import { ApiTags } from '@nestjs/swagger'
 import { UserRequest } from 'src/decorator/user.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
-import type { AuthenticTicketDto } from 'src/http/dtos/authentic.ticket.dto'
-import { CreateTicketDto } from 'src/http/dtos/create.ticket.dto'
+import type { AuthenticTicketDto } from 'src/http/dtos/ticket/authentic.ticket.dto'
+import { CreateTicketDto } from 'src/http/dtos/ticket/create.ticket.dto'
 import { TicketBuyDto } from 'src/http/dtos/buy.ticket.dto'
 import { TicketService } from 'src/application/services/ticket/ticket.service'
 

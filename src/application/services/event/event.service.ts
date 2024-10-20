@@ -4,6 +4,7 @@ import { UpdateEventDTO } from 'src/http/dtos/event/update.event.dto'
 import { UserService } from '../user/user.service'
 import type { IEventRepository } from 'src/application/repositories/event.repository.interface'
 import { Event } from 'src/application/models/Event'
+import type { User } from 'src/application/models/User'
 
 @Injectable()
 export class EventService {
@@ -21,31 +22,14 @@ export class EventService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async create(req: any, data: CreateEventDto) {
-    if (!req.user) {
-      throw new Error('User not found')
-    }
-
-    const user = await this.userService.findByEmailOrUsername(
-      req.user.name,
-      req.user.email,
-    )
-
-    if (!user) {
-      throw new Error('User not found')
-    }
-
-    if (!user.tenantId) {
-      throw new Error('User not authorized')
-    }
-
+  async create(data: CreateEventDto, userToRequest: User) {
     const { name, dateAndTime, location, type } = data
 
     const event = new Event({
       name,
       dateAndTime,
       location,
-      tenantId: user.tenantId,
+      tenantId: userToRequest.tenantId,
       type,
     })
 

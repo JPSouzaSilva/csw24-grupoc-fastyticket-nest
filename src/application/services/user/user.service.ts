@@ -1,16 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { AuthService } from '../auth/auth.service'
 import { LoginDto } from 'src/http/dtos/login.user.dto'
-import { RegisterUserDto } from 'src/http/dtos/register.user.dto'
-import type { PreferencesDTO } from 'src/http/dtos/preferences.dto'
-import { Role } from 'src/lib/role.enum'
-import { User } from '@prisma/client'
 import type { IUserRepository } from 'src/application/repositories/user.repository.interface'
+import type { RegisterUserDto } from 'src/http/dtos/user/register.user.dto'
+import { User } from 'src/application/models/User'
+import type { NotificationService } from '../notification/notification.service'
+import { NotificationPreferences } from 'src/application/models/NotificationPreferences'
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: IUserRepository,
+    private readonly notificationService: NotificationService,
     private readonly authService: AuthService,
   ) {}
 
@@ -19,36 +20,35 @@ export class UserService {
   }
 
   async login(login: LoginDto) {
-    const user = await this.findByEmailOrUsername(login.username, login.email)
+    const user = await this.userRepository.findByEmailOrUsername(
+      login.email,
+      login.username,
+    )
+
+    if (!user) {
+      throw new NotFoundException('User not found')
+    }
+
     return this.authService.login(user)
   }
 
   async register(data: RegisterUserDto) {
-    const userCreateInput = {
-      name: data.name,
-      email: data.email,
-      role: data.role === Role.ADMIN ? Role.ADMIN : Role.USER,
-      Tenant: {
-        connect: {
-          id: data.tenantId,
-        },
-      },
-    }
-    return this.userRepository.create(userCreateInput)
-  }
+    const { email, name, role, tenantId } = data
 
-  async preferences(preferenceDto: PreferencesDTO, user: User) {
-    if (!user) {
-      throw new NotFoundException('User not Found')
-    }
-
-    return await this.userRepository.update(user.id, {
-      NotificationPreferences: {
-        update: {
-          pushNotification: preferenceDto.pushNotification,
-          receiveEmail: preferenceDto.emailNotification,
-        },
-      },
+    const user = new User({
+      email,
+      name,
+      role,
+      tenantId,
     })
+
+    const notification = new NotificationPreferences({
+      receiveEmail: false,
+      userId: user.id,
+    })
+
+    await this.notificationService.create(notification)
+
+    return this.userRepository.create(user)
   }
 }

@@ -7,10 +7,8 @@ export class TenantMapper {
       {
         name: tenant.name,
         contactInfo: tenant.contactInfo,
-        privacyConfig: {
-          paymentPreference: tenant.specificSettings, // Rever
-          notification: false, // Rever
-        },
+        paymentPreference: tenant.paymentPreference,
+        notification: tenant.notificationPreference,
       },
       tenant.tenantId,
     )
@@ -21,7 +19,8 @@ export class TenantMapper {
       tenantId: tenant.id,
       name: tenant.name,
       contactInfo: tenant.contactInfo,
-      specificSettings: tenant.privacyConfig.paymentPreference, // Rever
+      paymentPreference: tenant.paymentPreference,
+      notificationPreference: tenant.notification,
     }
   }
 }

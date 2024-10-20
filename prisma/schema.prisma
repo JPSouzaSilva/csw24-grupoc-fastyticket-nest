@@ -8,14 +8,15 @@ datasource db {
 }
 
 model Tenant {
-  tenantId         String        @id
-  name             String
-  contactInfo      String?
-  specificSettings String?
-  users            User[]
-  events           Event[]
-  tickets          Ticket[]
-  transactions     Transaction[]
+  tenantId               String        @id
+  name                   String
+  contactInfo            String?
+  paymentPreference      String?
+  notificationPreference Boolean
+  users                  User[]
+  events                 Event[]
+  tickets                Ticket[]
+  transactions           Transaction[]
 
   @@map("tenant")
 }

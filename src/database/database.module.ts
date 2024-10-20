@@ -10,6 +10,8 @@ import { EventRepository } from './prisma/repositories/event/event.repository'
 import { TicketRepository } from './prisma/repositories/ticket/ticket.repository'
 import { TransactionRepository } from './prisma/repositories/transaction/transaction.repository'
 import { PrismaService } from './prisma/prisma.service'
+import { INotificationPreferencesRepository } from 'src/application/repositories/notification.preferences.repository.interface'
+import { NotificationPreferencesRepository } from './prisma/repositories/notification/notification.repository'
 
 @Module({
   providers: [
@@ -34,6 +36,10 @@ import { PrismaService } from './prisma/prisma.service'
       provide: ITicketRepository,
       useClass: TicketRepository,
     },
+    {
+      provide: INotificationPreferencesRepository,
+      useClass: NotificationPreferencesRepository,
+    },
   ],
   exports: [
     ITenantRepository,
@@ -41,6 +47,7 @@ import { PrismaService } from './prisma/prisma.service'
     IEventRepository,
     ITransactionRepository,
     ITicketRepository,
+    INotificationPreferencesRepository,
   ],
 })
 export class DatabaseModule {}
