@@ -74,4 +74,17 @@ export class UserRepository implements IUserRepository {
 
     return !!userDeleted
   }
+
+  async getRate(id: string): Promise<number> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        userId: id,
+      },
+      select: {
+        rate: true,
+      },
+    })
+
+    return user.rate
+  }
 }

@@ -12,4 +12,5 @@ export abstract class IUserRepository {
   abstract update(id: string, user: User): Promise<User | null>
 
   abstract delete(id: string): Promise<boolean>
+  abstract getRate(id: string): Promise<number>
 }

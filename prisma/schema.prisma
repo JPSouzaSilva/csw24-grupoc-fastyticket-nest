@@ -28,6 +28,7 @@ model User {
   name                    String
   email                   String                   @unique
   role                    String
+  rate                    Int?
   soldTickets             Ticket[]                 @relation("sellerTickets")
   boughtTransactions      Transaction[]            @relation("buyerTransactions")
   notificationPreferences NotificationPreferences?

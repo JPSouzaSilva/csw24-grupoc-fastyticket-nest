@@ -51,4 +51,8 @@ export class UserService {
 
     return this.userRepository.create(user)
   }
+
+  async getRate(userId: string) {
+    return this.userRepository.getRate(userId)
+  }
 }
