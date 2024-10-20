@@ -14,7 +14,7 @@ import { NotificationService } from 'src/application/services/notification/notif
 import { JwtService } from '@nestjs/jwt'
 
 @Module({
-  imports: [DatabaseModule, AuthModule], // Added AuthModule here
+  imports: [DatabaseModule, AuthModule],
   controllers: [
     EventController,
     TenantController,

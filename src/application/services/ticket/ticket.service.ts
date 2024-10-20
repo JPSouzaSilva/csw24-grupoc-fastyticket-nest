@@ -119,6 +119,8 @@ export class TicketService {
         ticketId: newTicket.id,
       })
     }
+
+    return { ticketsToBuy }
   }
 
   async createTransaction(createTransactionDto: CreateTransactionDto) {
