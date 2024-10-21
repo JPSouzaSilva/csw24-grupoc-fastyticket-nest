@@ -11,6 +11,7 @@ export class TicketMapper {
         sellerId: ticket.sellerId,
         code: ticket.code,
         status: ticket.status,
+        description: ticket.description,
       },
       ticket.ticketId,
     )
@@ -25,6 +26,7 @@ export class TicketMapper {
       sellerId: ticket.sellerId,
       code: ticket.code,
       status: ticket.status,
+      description: ticket.description,
     }
   }
 }

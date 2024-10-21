@@ -7,6 +7,7 @@ export interface TicketProps {
   sellerId: string
   code: string
   status: string
+  description?: string
 }
 
 export class Ticket {
@@ -68,5 +69,13 @@ export class Ticket {
 
   public set status(status: string) {
     this.props.status = status
+  }
+
+  public get description(): string {
+    return this.props.description
+  }
+
+  public set description(description: string) {
+    this.props.description = description
   }
 }
