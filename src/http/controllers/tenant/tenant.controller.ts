@@ -32,7 +32,7 @@ export class TenantController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para criar um tenant.',
+      message: 'Usuário não autorizado.',
     }
   })
   @ApiResponse({
@@ -90,7 +90,7 @@ export class TenantController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para atualizar o tenant.',
+      message: 'Usuário não autorizado.',
     }
   })
   @ApiResponse({
@@ -139,7 +139,7 @@ export class TenantController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para deletar o tenant.',
+      message: 'Usuário não autorizado.',
     }
   })
   @ApiResponse({

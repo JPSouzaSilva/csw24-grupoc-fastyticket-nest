@@ -43,7 +43,7 @@ export class TicketController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para disponibilizar novos ingressos o tenant.',
+      message: 'Usuário não autorizado.',
     }
   })
   @ApiResponse({
@@ -103,8 +103,25 @@ export class TicketController {
       ]
   })
   @ApiResponse({
-    status: 404,
-    description: 'Nenhum ticket encontrado para o evento.',
+    status: 400,
+    description: 'Dados fornecidos inválidos.',
+    example: {
+      message: 'Os dados fornecido para pesqusiar ingresso são inválidos.',
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso negado.',
+    example: {
+      message: 'Usuário não autorizado.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.',
+    }
   })
   @ApiParam({
     name: 'id',
@@ -139,7 +156,7 @@ export class TicketController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para comprar o ingresso.',
+      message: 'Usuário não autorizado.',
     }
   })
   @ApiResponse({
@@ -189,7 +206,7 @@ export class TicketController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para autenticar o ingresso.',
+      message: 'Usuário não autorizado.',
     }
   })
   @ApiResponse({

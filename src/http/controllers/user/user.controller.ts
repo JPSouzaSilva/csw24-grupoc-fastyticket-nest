@@ -33,10 +33,7 @@ export class UserController {
     description: 'Login efetuado com sucesso.',
     type: LoginDto,
     example: {
-      summary: 'Resposta bem-sucedida',
-      value: {
-        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5vbWUifQ.bt-F3HkbV-vz7IzKJfik_8grERv-YAxsR2j8c-sqNLM'
-      }
+      accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5vbWUifQ.bt-F3HkbV-vz7IzKJfik_8grERv-YAxsR2j8c-sqNLM'
     }
   })
   @ApiResponse({
@@ -98,7 +95,7 @@ export class UserController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para acessar as informações do perfil.',
+      message: 'Usuário não autorizado.',
     }
   })
   @ApiResponse({
@@ -135,7 +132,7 @@ export class UserController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para registrar um novo usuário.',
+      message: 'Usuário não autorizado.',
     }
   })
   @ApiResponse({
@@ -148,15 +145,7 @@ export class UserController {
   @ApiBody({
     description: 'Dados do usuário para registro',
     required: true,
-    type: RegisterUserDto,
-    schema: {
-      type: 'object',
-      properties: {
-        username: { type: 'string', example: 'fulano' },
-        email: { type: 'string', example: 'fulano@email.com' }
-      },
-      required: ['username', 'email'],
-    },
+    type: RegisterUserDto
   })
   @Post('register')
   async register(@Body() data: RegisterUserDto) {
@@ -172,7 +161,7 @@ export class UserController {
     status: 200,
     description: 'Atualizado com sucesso.',
     example: {
-      summary: 'Resposta de sucesso'
+      message: 'Resposta de sucesso'
     }
   })
   @ApiResponse({
@@ -186,7 +175,7 @@ export class UserController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para atualizar suas preferências.',
+      message: 'Usuário não autorizado.'
     }
   })
   @ApiResponse({

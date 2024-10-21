@@ -45,7 +45,7 @@ export class EventController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para criar eventos.'
+      message: 'Usuário não autorizado.'
     }
   })
   @ApiResponse({
@@ -95,7 +95,7 @@ export class EventController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para atualizar eventos.',
+      message: 'Usuário não autorizado.',
     }
   })
   @ApiResponse({
@@ -149,7 +149,7 @@ export class EventController {
     status: 401,
     description: 'Acesso negado.',
     example: {
-      message: 'Usuário não possui permissão para deletar eventos.',
+      message: 'Usuário não autorizado.',
     }
   })
   @ApiResponse({
@@ -199,7 +199,7 @@ export class EventController {
     status: 401,
     description: 'Consulta não autorizada.',
     example: {
-      message: 'Usuário não possui permissão para consultar eventos.'
+      message: 'Usuário não autorizado.'
     }
   })
   @ApiResponse({
