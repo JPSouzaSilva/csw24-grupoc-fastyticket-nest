@@ -20,6 +20,10 @@ export class NotificationService {
     return this.notificationRepository.create(notification)
   }
 
+  async findByUserId(userId: string) {
+    return await this.notificationRepository.findByUserId(userId)
+  }
+
   async preference(userId: string, receiveEmail: boolean) {
     const notification = await this.notificationRepository.findByUserId(userId)
 

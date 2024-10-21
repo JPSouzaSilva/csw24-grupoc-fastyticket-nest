@@ -19,6 +19,7 @@ import { ITicketRepository } from 'src/application/repositories/ticket.repositor
 import { MailerService } from '@nestjs-modules/mailer'
 import { ticketSoldEmail } from 'src/mail/ticket.sold.email'
 import { UserService } from '../user/user.service'
+import { NotificationService } from '../notification/notification.service'
 
 @Injectable()
 export class TicketService {
@@ -28,6 +29,7 @@ export class TicketService {
     private readonly eventService: EventService,
     private readonly mailService: MailerService,
     private readonly userService: UserService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async create(createTicketDto: CreateTicketDto, user: User) {
@@ -152,7 +154,11 @@ export class TicketService {
         ticketId: newTicket.id,
       })
 
-      await this.sendMailToTicketOwner(owner.email, event.name)
+      const notification = await this.notificationService.findByUserId(owner.id)
+
+      if (notification.receiveEmail) {
+        await this.sendMailToTicketOwner(owner.email, event.name)
+      }
     }
 
     return { ticketsToBuy }
