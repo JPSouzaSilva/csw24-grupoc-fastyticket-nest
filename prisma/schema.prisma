@@ -41,6 +41,7 @@ model Event {
   tenantId  String
   tenant    Tenant   @relation(fields: [tenantId], references: [tenantId])
   eventName String
+  onwerId   String
   type      String
   location  String
   dateTime  DateTime

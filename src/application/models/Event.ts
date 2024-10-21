@@ -5,6 +5,7 @@ export interface EventProps {
   name: string
   type: string
   location: string
+  ownerId: string
   dateAndTime: Date
 }
 
@@ -59,5 +60,9 @@ export class Event {
 
   public set dateAndTime(dateAndTime: Date) {
     this.props.dateAndTime = dateAndTime
+  }
+
+  public get ownerId(): string {
+    return this.props.ownerId
   }
 }
