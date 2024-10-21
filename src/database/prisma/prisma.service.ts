@@ -12,11 +12,28 @@ export class PrismaService
     })
   }
 
-  onModuleInit() {
-    return this.$connect()
+  async onModuleInit() {
+    await this.$connect()
+
+    const tenantId = '123'
+    const existingTenant = await this.tenant.findUnique({
+      where: { tenantId },
+    })
+
+    if (!existingTenant) {
+      await this.tenant.create({
+        data: {
+          tenantId,
+          name: 'Tenant',
+          contactInfo: 'contact@example.com',
+          paymentPreference: 'Bitcoin',
+          notificationPreference: true,
+        },
+      })
+    }
   }
 
-  onModuleDestroy() {
+  async onModuleDestroy() {
     return this.$disconnect()
   }
 }
