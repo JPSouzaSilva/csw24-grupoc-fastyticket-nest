@@ -8,7 +8,7 @@ import {
   Query,
   ParseBoolPipe,
 } from '@nestjs/common'
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserRequest } from 'src/decorator/user.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { LoginDto } from 'src/http/dtos/login.user.dto'
@@ -54,13 +54,6 @@ export class UserController {
     description: 'Username e email para Autenticação',
     required: true,
     type: LoginDto,
-    schema: {
-      type: 'object',
-      properties: {
-        username: { type: 'string', example: 'exemplo' },
-        email: { type: 'string', example: 'exemplo@email.com' }
-      }
-    }
   })
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
