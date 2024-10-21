@@ -28,6 +28,10 @@ export class TicketService {
   async create(createTicketDto: CreateTicketDto, user: User) {
     const event = await this.eventService.findById(createTicketDto.eventId)
 
+    if (!event) {
+      throw new NotFoundException('Event not found')
+    }
+
     if (event.ownerId !== user.id) {
       throw new UnauthorizedException(
         'You do not have permission to create a ticket for this event',
