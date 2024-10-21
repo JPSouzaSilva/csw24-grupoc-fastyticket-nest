@@ -16,6 +16,10 @@ import type { CreateTransactionDto } from 'src/http/dtos/transaction/create.tran
 import { Transaction } from 'src/application/models/Transaction'
 import type { AuthenticTicketDto } from 'src/http/dtos/ticket/authentic.ticket.dto'
 import { ITicketRepository } from 'src/application/repositories/ticket.repository.interface'
+import { MailerService } from '@nestjs-modules/mailer'
+import { ticketSoldEmail } from 'src/mail/ticket.sold.email'
+import { UserService } from '../user/user.service'
+import { NotificationService } from '../notification/notification.service'
 
 @Injectable()
 export class TicketService {
@@ -23,6 +27,9 @@ export class TicketService {
     private readonly ticketRepository: ITicketRepository,
     private readonly transactionService: TransactionService,
     private readonly eventService: EventService,
+    private readonly mailService: MailerService,
+    private readonly userService: UserService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async create(createTicketDto: CreateTicketDto, user: User) {
@@ -46,6 +53,7 @@ export class TicketService {
         status: 'Disponivel',
         eventId: createTicketDto.eventId,
         tenantId: user.tenantId,
+        description: createTicketDto.description ?? '',
         sellerId: user.id,
       })
 
@@ -79,6 +87,7 @@ export class TicketService {
         eventId: event.id,
         tenantId: userToRequest.tenantId,
         sellerId: userToRequest.id,
+        description: ticket.description,
       },
       ticket.id,
     )
@@ -111,6 +120,12 @@ export class TicketService {
         )
       }
 
+      const owner = await this.userService.findById(ticket.sellerId)
+
+      if (!owner) {
+        throw new BadRequestException()
+      }
+
       const newTicket = new Ticket(
         {
           code: ticket.code,
@@ -119,6 +134,7 @@ export class TicketService {
           eventId: event.id,
           tenantId: userToRequest.tenantId,
           sellerId: userToRequest.id,
+          description: ticket.description,
         },
         ticket.id,
       )
@@ -137,6 +153,12 @@ export class TicketService {
         tenantId: userToRequest.tenantId,
         ticketId: newTicket.id,
       })
+
+      const notification = await this.notificationService.findByUserId(owner.id)
+
+      if (notification.receiveEmail) {
+        await this.sendMailToTicketOwner(owner.email, event.name)
+      }
     }
 
     return { ticketsToBuy }
@@ -178,6 +200,7 @@ export class TicketService {
       eventId: ticket.eventId,
       tenantId: ticket.tenantId,
       sellerId: ticket.sellerId,
+      description: ticket.description,
     })
 
     return this.ticketRepository.update(ticket.id, newTicket)
@@ -203,6 +226,7 @@ export class TicketService {
       status: 'Disponivel',
       eventId: ticket.eventId,
       tenantId: ticket.tenantId,
+      description: ticket.description,
       sellerId: null,
     })
 
@@ -211,5 +235,13 @@ export class TicketService {
 
   async findByEventId(eventId: string) {
     return this.ticketRepository.findByEventId(eventId)
+  }
+
+  async sendMailToTicketOwner(ownerMail: string, eventName: string) {
+    await this.mailService.sendMail({
+      to: ownerMail,
+      subject: 'Ingresso Vendido',
+      html: ticketSoldEmail(eventName),
+    })
   }
 }

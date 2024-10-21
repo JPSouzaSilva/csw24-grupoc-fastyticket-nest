@@ -61,6 +61,7 @@ model Ticket {
   seller      User         @relation("sellerTickets", fields: [sellerId], references: [userId])
   code        String
   status      String
+  description String?
   transaction Transaction?
 
   @@map("ticket")

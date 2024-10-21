@@ -56,4 +56,8 @@ export class UserService {
   async getRate(userId: string) {
     return this.userRepository.getRate(userId)
   }
+
+  async findById(userId: string) {
+    return await this.userRepository.findById(userId)
+  }
 }
