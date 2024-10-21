@@ -8,100 +8,86 @@ datasource db {
 }
 
 model Tenant {
-  id          String        @id @default(uuid())
-  name        String
-  contactInfo String
-  userId      User[]
-  Event       Event[]
-  Ticket      Ticket[]
-  Transaction Transaction[]
+  tenantId               String        @id @default(cuid())
+  name                   String
+  contactInfo            String?
+  paymentPreference      String?
+  notificationPreference Boolean
+  users                  User[]
+  events                 Event[]
+  tickets                Ticket[]
+  transactions           Transaction[]
 
-  @@map("tenants")
+  @@map("tenant")
 }
 
 model User {
-  id            String        @id @unique @default(uuid())
-  name          String        @unique
-  email         String        @unique
-  password      String
-  firebaseToken String        @unique @map("firebase_token")
-  tenantId      String?       @map("tenant_id")
-  role          String        
-  Ticket        Ticket[]
-  Transaction   Transaction[]
+  userId                  String                   @id @default(cuid())
+  tenantId                String
+  tenant                  Tenant                   @relation(fields: [tenantId], references: [tenantId])
+  name                    String
+  email                   String                   @unique
+  role                    String
+  balance                 Float                    @default(0)
+  rate                    Int?
+  soldTickets             Ticket[]                 @relation("sellerTickets")
+  boughtTransactions      Transaction[]            @relation("buyerTransactions")
+  notificationPreferences NotificationPreferences?
 
-  Tenant                  Tenant?                  @relation(fields: [tenantId], references: [id])
-  NotificationPreferences NotificationPreferences?
-  PrivacyConfig           PrivacyConfig?
-
-  @@map("users")
+  @@map("user")
 }
 
 model Event {
-  id          String   @id @unique @default(uuid())
-  name        String
-  type        String
-  address     String
-  dateAndTime DateTime
-  tenantId    String
+  eventId   String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [tenantId])
+  eventName String
+  onwerId   String
+  type      String
+  location  String
+  dateTime  DateTime
+  tickets   Ticket[]
 
-  tenant Tenant   @relation(fields: [tenantId], references: [id])
-  Ticket Ticket[]
-
-  @@map("events")
+  @@map("event")
 }
 
 model Ticket {
-  id       String @id @unique @default(uuid())
-  eventId  String @map("event_id")
-  tenantId String @map("tenant_id")
-  userId   String @map("user_id")
-  price    Float
-  code     String @unique
-  status   String
+  ticketId    String       @id @default(cuid())
+  eventId     String
+  event       Event        @relation(fields: [eventId], references: [eventId])
+  tenantId    String
+  tenant      Tenant       @relation(fields: [tenantId], references: [tenantId])
+  price       Float
+  sellerId    String
+  seller      User         @relation("sellerTickets", fields: [sellerId], references: [userId])
+  code        String
+  status      String
+  description String?
+  transaction Transaction?
 
-  user   User   @relation(fields: [userId], references: [id])
-  event  Event  @relation(fields: [eventId], references: [id])
-  tenant Tenant @relation(fields: [tenantId], references: [id])
-
-  @@map("tickets")
+  @@map("ticket")
 }
 
 model Transaction {
-  id              String   @id @unique @default(uuid())
-  price           Float
-  dateTransaction DateTime @default(now())
-  status          String
-  tenantId        String
-  userId          String
-  date            DateTime @default(now())
+  transactionId     String   @id @default(cuid())
+  tenantId          String
+  tenant            Tenant   @relation(fields: [tenantId], references: [tenantId])
+  buyerId           String
+  buyer             User     @relation("buyerTransactions", fields: [buyerId], references: [userId])
+  ticketId          String   @unique
+  ticket            Ticket   @relation(fields: [ticketId], references: [ticketId])
+  price             Float
+  transactionDate   DateTime
+  transactionStatus String
 
-  tenant Tenant @relation(fields: [tenantId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
-
-  @@map("transactions")
+  @@map("transaction")
 }
 
 model NotificationPreferences {
-  id               String  @id @unique @default(uuid())
-  userId           String  @unique @map("user_id")
-  receiveEmail     Boolean @map("receive_email")
-  pushNotification Boolean @map("push_notification")
-
-  user User @relation(fields: [userId], references: [id])
+  preferencesId String  @id @default(cuid())
+  userId        String  @unique
+  user          User    @relation(fields: [userId], references: [userId])
+  receiveEmails Boolean
 
   @@map("notification_preferences")
-}
-
-model PrivacyConfig {
-  id                     String  @id @default(uuid())
-  userId                 String  @unique @map("user_id")
-  shareData              Boolean @map("share_data")
-  privateProfile         Boolean @map("private_profile")
-  transactionHistory     Boolean @map("transaction_history")
-  marketingCommunication Boolean @map("marketing_communication")
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@map("privacy_configs")
 }

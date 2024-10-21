@@ -1,32 +1,27 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
-import { TenantService } from 'src/services/tenant/tenant.service'
+import { Body, Controller, Delete, Post, Put, UseGuards } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
+import { TenantService } from 'src/application/services/tenant/tenant.service'
+import { AuthGuard } from 'src/guard/auth.guard'
+import { CreateTenantDTO } from 'src/http/dtos/tenant/create.tenant.dto'
+import { UpdateTenantDTO } from 'src/http/dtos/tenant/update.tenant.dto'
 
 @Controller('tenant')
+@ApiTags('Tenant')
 export class TenantController {
-  private readonly tenantService: TenantService
-
+  constructor(private readonly tenantService: TenantService) {}
   @Post('create')
-  async create(@Body() data: Prisma.TenantCreateInput) {
+  async create(@Body() data: CreateTenantDTO) {
     return this.tenantService.create(data)
   }
 
-  @Get()
-  async findAll() {
-    return this.tenantService.findAll()
-  }
-
-  @Get(':id')
-  async findById(id: string) {
-    return this.tenantService.findById(id)
-  }
-
-  @Post(':id/update')
-  async update(@Body() data: Prisma.TenantUpdateInput, id: string) {
+  @UseGuards(AuthGuard)
+  @Put(':id/update')
+  async update(@Body() data: UpdateTenantDTO, id: string) {
     return this.tenantService.update(id, data)
   }
 
-  @Post(':id/delete')
+  @UseGuards(AuthGuard)
+  @Delete(':id/delete')
   async delete(id: string) {
     return this.tenantService.delete(id)
   }
