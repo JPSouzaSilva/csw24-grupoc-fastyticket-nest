@@ -9,7 +9,7 @@ export class CreateNotificationDto {
   userId: string
 
   @ApiProperty({
-    description: 'Receber Email',
+    description: 'Receive Email',
     example: true
   })
   receiveEmail: boolean

@@ -25,12 +25,12 @@ export class UserController {
   ) {}
 
   @ApiOperation({
-    summary: 'Login do Usuário',
-    description: 'Realiza o login do usuário na aplicação.'
+    summary: 'User Login',
+    description: 'Performs user login in the application.'
   })
   @ApiResponse({
     status: 200,
-    description: 'Login efetuado com sucesso.',
+    description: 'Login successful.',
     type: LoginDto,
     example: {
       accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5vbWUifQ.bt-F3HkbV-vz7IzKJfik_8grERv-YAxsR2j8c-sqNLM'
@@ -38,20 +38,20 @@ export class UserController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Requisição Inválida',
+    description: 'Invalid Request',
     example: {
-      message: 'Usuário não encontrado.'
+        message: 'User not found.'
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro Interno do Servidor',
+    description: 'Internal Server Error',
     example: {
-      message: 'Erro interno do servidor.'
+        message: 'Internal server error.'
     }
   })
   @ApiBody({
-    description: 'Username e email para Autenticação',
+    description: 'Username and email for authentication',
     required: true,
     type: LoginDto,
   })
@@ -62,81 +62,82 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @ApiOperation({
-    summary: 'Perfil do Usuário',
-    description: 'Informações do perfil do usuário.'
+    summary: 'User Profile',
+    description: 'User profile information.'
   })
   @ApiResponse({
     status: 200,
-    description: 'Informações do Usuário',
+    description: 'User Information',
     example: {
-      summary: 'Resposta de Sucesso',
-      value: {
-        id: 1,
-        username: 'exemplo',
-        email: 'exemplo@email.com'
-      }
+        summary: 'Successful Response',
+        value: {
+            id: 1,
+            username: 'example',
+            email: 'example@email.com'
+        }
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados fornecidos inválidos.',
+    description: 'Invalid provided data.',
     example: {
-      message: 'Os dados fornecido do perfil do usuário são inválidos.',
+        message: 'The provided user profile data is invalid.',
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Acesso negado.',
+    description: 'Access denied.',
     example: {
-      message: 'Usuário não autorizado.',
+        message: 'Unauthorized.',
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal server error.',
     example: {
-      message: 'Erro interno do servidor.',
+        message: 'Internal server error.',
     }
   })
+
   @Get('profile')
   async getUser(@UserRequest() req) {
     return this.userService.findByEmailOrUsername(req.name, req.email)
   }
 
   @ApiOperation({
-    summary: 'Registro de Novo Usuário',
-    description: 'Cria um novo usuário com os dados fornecidos.'
+    summary: 'New User Registration',
+    description: 'Creates a new user with the provided data.'
   })
   @ApiResponse({
     status: 201,
-    description: 'Usuário registrado com sucesso.',
+    description: 'User successfully registered.',
     example: {
-      message: 'Usuário registrado com sucesso.'
+        message: 'User successfully registered.'
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados fornecidos inválidos.',
+    description: 'Invalid provided data.',
     example: {
-      message: 'Os dados fornecido para registrar o usuário são inválidos.',
+        message: 'The data provided for user registration is invalid.',
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Acesso negado.',
+    description: 'Access denied.',
     example: {
-      message: 'Usuário não autorizado.',
+        message: 'User not authorized.',
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal server error.',
     example: {
-      message: 'Erro interno do servidor.',
+        message: 'Internal server error.',
     }
   })
   @ApiBody({
-    description: 'Dados do usuário para registro',
+    description: 'User data for registration',
     required: true,
     type: RegisterUserDto
   })
@@ -147,49 +148,50 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @ApiOperation({
-    summary: 'Preferências do Usuário',
-    description: 'Atualiza as preferências de um usuário.',
+    summary: 'User Preferences',
+    description: 'Updates preferences of a user.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Atualizado com sucesso.',
+    description: 'Updated successfully.',
     example: {
-      message: 'Resposta de sucesso'
+        message: 'Successful response'
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados fornecidos inválidos.',
+    description: 'Invalid provided data.',
     example: {
-      message: 'Os dados fornecido para atualizar as preferências são inválidos.',
+        message: 'The data provided to update the preferences is invalid.',
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Acesso negado.',
+    description: 'Access denied.',
     example: {
-      message: 'Usuário não autorizado.'
+        message: 'Unauthorized.'
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal server error.',
     example: {
-      message: 'Erro interno do servidor.',
+        message: 'Internal server error.',
     }
   })
   @ApiBody({
-    description: 'Dados de preferências do usuário',
+    description: 'User preferences data',
     required: true,
     examples: {
-      example1: {
-        summary: 'Exemplo de Preferências',
-        value: {
-          notifications: true
+        example1: {
+            summary: 'Preferences Example',
+            value: {
+                notifications: true
+            },
         },
-      },
     },
   })
+
   @Put('preferences')
   async preferences(
     @UserRequest() req,

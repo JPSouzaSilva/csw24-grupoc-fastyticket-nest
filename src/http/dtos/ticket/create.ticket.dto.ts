@@ -3,13 +3,13 @@ import { ApiProperty } from "@nestjs/swagger"
 export class CreateTicketDto {
 
   @ApiProperty({
-    description: 'Número de Ingressos',
+    description: 'Number of Tickets',
     example: 2000
   })
   numberOfTickets: number
 
   @ApiProperty({
-    description: 'Preço',
+    description: 'Price',
     example: 150.0
   })
   price: number
@@ -21,7 +21,7 @@ export class CreateTicketDto {
   eventId: string
 
   @ApiProperty({
-    description: 'Descrição',
+    description: 'Description',
     example: 'Show de Rock'
   })
   description?: string

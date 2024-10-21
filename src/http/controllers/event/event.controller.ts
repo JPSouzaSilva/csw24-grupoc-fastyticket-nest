@@ -15,6 +15,7 @@ import { AuthGuard } from 'src/guard/auth.guard'
 import { CreateEventDto } from 'src/http/dtos/event/create.event.dto'
 import { EventService } from 'src/application/services/event/event.service'
 import { UpdateEventDTO } from 'src/http/dtos/event/update.event.dto'
+import { date } from 'zod'
 
 @UseGuards(AuthGuard)
 @Controller('event')
@@ -24,47 +25,48 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @ApiOperation({
-    summary: 'Criar Evento',
-    description: 'Criação de um novo evento por um admin.',
+    summary: 'Create Event',
+    description: 'Create new event as an admin.',
   })
   @ApiResponse({
     status: 201,
-    description: 'Evento criado com sucesso.',
+    description: 'Event created successfully.',
     example: {
-      message: 'Evento criado com sucesso.'
+      message: 'Event created successfully.'
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados fornecidos inválidos.',
+    description: 'Invalid data provided.',
     example: {
-      message: 'Dados fornecidos para criação de um evento são inválidos.'
+      message: 'The data provided for creating an event is invalid.'
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Acesso negado.',
+    description: 'Request denied.',
     example: {
-      message: 'Usuário não autorizado.'
+      message: 'Unauthorized.'
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal Server Error.',
     example: {
-      message: 'Erro interno do servidor.'
+      message: 'Internal server error.'
     }
   })
   @ApiBody({
-    description: 'Dados para criação de um evento',
+    description: 'Data for creating an event',
     required: true,
     type: CreateEventDto,
     schema: {
       type: 'object',
       properties: {
-        nomeDoEvento: { type: 'string', example: 'Numanice' },
-        tipo: { type: 'string', example: 'show' },
-        localizacao: { type: 'string', example: 'Parque Harmonia' }
+        name: { type: 'string', example: 'Numanice' },
+        type: { type: 'string', example: 'show' },
+        location: { type: 'string', example: 'Parque Harmonia' },
+        dateAndTime: { type: 'Date', example: '2024-10-21T21:30:30.010Z' }
       }
     }
   })
@@ -74,47 +76,48 @@ export class EventController {
   }
 
   @ApiOperation({
-    summary: 'Atualizar Evento',
-    description: 'Atualiza as informações de um evento já cadastrado.',
+    summary: 'Update Event',
+    description: 'Update data from an event.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Evento atualizado com sucesso.',
+    description: 'Event updated successfully.',
     example: {
-      message: 'Evento atualizado com sucesso.',
+      message: 'Event updated successfully.',
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados fornecidos inválidos.',
+    description: 'Invalid data provided.',
     example: {
-      message: 'Os dados fornecidos para atualização são inválidos.',
+      message: 'The data provided for updating an event is invalid.',
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Acesso negado.',
+    description: 'Request denied.',
     example: {
-      message: 'Usuário não autorizado.',
+      message: 'Unauthorized.',
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal server erro.',
     example: {
-      message: 'Erro interno do servidor.',
+      message: 'Internal server erro.',
     }
   })
   @ApiBody({
-    description: 'Dados para atualização do evento',
+    description: 'Data to update an event',
     required: true,
     type: UpdateEventDTO,
     schema: {
       type: 'object',
       properties: {
-        nomeDoEvento: { type: 'string', example: 'Numanice 2' },
-        tipo: { type: 'string', example: 'show' },
-        localizacao: { type: 'string', example: 'Parque Farroupilha' },
+        name: { type: 'string', example: 'Numanice 2' },
+        type: { type: 'string', example: 'show' },
+        location: { type: 'string', example: 'Parque Farroupilha' },
+        dateAndTime: { type: 'Date', example: '2024-10-21T21:30:30.010Z' }
       }
     }
   })
@@ -128,35 +131,35 @@ export class EventController {
   }
 
   @ApiOperation({
-    summary: 'Deletar Evento',
-    description: 'Deleta um evento existente.',
+    summary: 'Delete Event',
+    description: 'Delete an event.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Evento deletado com sucesso.',
+    description: 'Event deleted successfully.',
     example: {
-      message: 'Evento deletado com sucesso.',
+      message: 'Event deleted successfully.',
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Requisição inválida para deletar o evento.',
+    description: 'Invalid request to delete the event.',
     example: {
-      message: 'Os dados fornecidos para deletar o evento são inválidos.',
+      message: 'The data provided for deleting the event is invalid.',
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Acesso negado.',
+    description: 'Request denied.',
     example: {
-      message: 'Usuário não autorizado.',
+      message: 'Unauthorized.',
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal server error.',
     example: {
-      message: 'Erro interno do servidor.',
+      message: 'Internal server error.',
     }
   })
   @Delete(':id/delete')
@@ -165,60 +168,64 @@ export class EventController {
   }
 
   @ApiOperation({
-    summary: 'Listar Eventos',
-    description: 'Lista todos os eventos.',
+    summary: 'List Events',
+    description: 'List all events.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Eventos listados com sucesso.',
+    description: 'Events listed successfully.',
     example: [
         {
           eventId: '1',
           tenantId: '123',
-          nomeDoEvento: 'Numanice',
-          tipo: 'show',
-          localizacao: 'Parque Harmonia'
+          name: 'Numanice',
+          type: 'show',
+          location: 'Parque Harmonia',
+          ownerId: 'clj0f5w9b0000ldqk8zse72y4',
+          dateAndTime: '2024-10-21T21:30:30.010Z'
         },
         {
           eventId: '2',
           tenantId: '456',
-          nomeDoEvento: 'Roger Waters',
-          tipo: 'show',
-          localizacao: 'Arena do Grêmio'
+          name: 'Roger Waters',
+          type: 'show',
+          location: 'Arena do Grêmio',
+          ownerId: 'clj0f5w9b0000ldqk8zse72y4',
+          dateAndTime: '2024-10-21T21:30:30.010Z'
         }
       ]
   })
   @ApiResponse({
     status: 400,
-    description: 'Consulta inválida.',
+    description: 'Invalid request.',
     example: {
-      message: 'Consulta inválida.'
+      message: 'Invalid request.'
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Consulta não autorizada.',
+    description: 'Request denied.',
     example: {
-      message: 'Usuário não autorizado.'
+      message: 'Unauthorized.'
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal server error.',
     example: {
-      message: 'Erro interno do servidor.'
+      message: 'Internal server error.'
     }
   })
   @ApiQuery({
     name: 'page',
     required: false,
-    description: 'Número da página. Padrão: 1',
+    description: 'Page number. Default: 1',
     example: 1,
   })
   @ApiQuery({
     name: 'limit',
     required: false,
-    description: 'Limite de itens por página. Padrão: 10',
+    description: 'Number of items per page. Default: 10',
     example: 10,
   })
   @Get('all')

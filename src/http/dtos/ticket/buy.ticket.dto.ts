@@ -9,7 +9,7 @@ export class TicketBuyDto {
   eventId: string
 
   @ApiProperty({
-    description: 'Ingressos',
+    description: 'Tickets',
     example: [
       'clj0f6n1e0002ldqkce8w3fs7',
       'clj0f6p7f0003ldqkcx1x2t8b',

@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger"
 export class AuthenticTicketDto {
 
   @ApiProperty({
-    description: 'Código do Ingresso',
+    description: 'Ticket Code',
     example: 'clj0f5w9b0000ldqk8zse72y4'
   })
   code: string

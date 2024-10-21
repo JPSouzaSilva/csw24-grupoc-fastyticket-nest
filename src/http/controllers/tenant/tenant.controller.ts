@@ -11,44 +11,46 @@ export class TenantController {
   constructor(private readonly tenantService: TenantService) {}
   
   @ApiOperation({
-    summary: 'Criar Novo Tenant',
-    description: 'Cria um novo tenant com os dados fornecidos.',
+    summary: 'Create New Tenant',
+    description: 'Creates a new tenant with the provided data.',
   })
   @ApiResponse({
     status: 201,
-    description: 'Tenant criado com sucesso.',
+    description: 'Tenant created successfully.',
     example: {
-      message: 'Tenant criado com sucesso.'
+      message: 'Tenant created successfully.'
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados inválidos.',
+    description: 'Invalid data.',
     example: {
-      message: 'Dados fornecido para criação de um tenant são inválidos.',
+      message: 'The data provided for creating a tenant is invalid.',
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Acesso negado.',
+    description: 'Request denied.',
     example: {
-      message: 'Usuário não autorizado.',
+      message: 'Unauthorized.',
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal server error.',
     example: {
-      message: 'Erro interno do servidor.',
+      message: 'Internal server error.',
     }
   })
   @ApiBody({
-    description: 'Dados para criação de um novo tenant',
+    description: 'Data for creating a tenant',
     schema: {
       type: 'object',
       properties: {
-        name: { type: 'string', example: 'Fulano da Silva' },
-        description: { type: 'string', example: 'Descrição do tenant' },
+        name: { type: 'string', example: 'Xanflis' },
+        contactInfo: { type: 'string', example: 'xanflis@email.com' },
+        paymentPreference: { type: 'string', example: 'Bitcoin' },
+        notification: { type: 'boolean', example: true }
       },
       required: ['name']
     }
@@ -60,54 +62,54 @@ export class TenantController {
 
   @UseGuards(AuthGuard)
   @ApiOperation({
-    summary: 'Atualizar um Tenant',
-    description: 'Atualiza os dados de um tenant existente por ID.',
+    summary: 'Update Tenant',
+    description: 'Updates the data of an existing tenant by id.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Tenant atualizado com sucesso.',
+    description: 'Tenant updated successfully.',
     example: {
-      summary: 'Resposta de sucesso',
+      summary: 'Success response',
       value: {
-        id: '123',
-        name: 'Fulano Atualizado',
-        contactInfo: 'fulanoatual@email.com',
-        specConfig: {
-          pagamento: 'Crédito',
-          notification: false
-        }
+        tenantId: '123',
+        name: 'Xanflis 2',
+        contactInfo: 'xanflis2@email.com',
+        paymentPreference: 'Credito',
+        notification: false
       }
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados fornecidos inválidos.',
+    description: 'Invalid data provided.',
     example: {
-      message: 'Os dados fornecido para atualização são inválidos.',
+      message: 'The data provided for the update is invalid.',
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Acesso negado.',
+    description: 'Access denied.',
     example: {
-      message: 'Usuário não autorizado.',
+      message: 'User is not authorized.',
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal server error.',
     example: {
-      message: 'Erro interno do servidor.',
+      message: 'Internal server error.',
     }
   })
   @ApiBody({
-    description: 'Dados para atualização do tenant',
+    description: 'Data for updating the tenant',
     required: true,
     schema: {
       type: 'object',
       properties: {
-        name: { type: 'string', example: 'Fulano Atualizado' },
-        description: { type: 'string', example: 'Nova descrição' },
+        name: { type: 'string', example: 'Xanflis 2' },
+        contactInfo: { type: 'string', example: 'xanflis2@email.com' },
+        paymentPreference: { type: 'string', example: 'Credito' },
+        notification: { type: 'boolean', example: true }
       }
     }
   })
@@ -118,37 +120,38 @@ export class TenantController {
 
   @UseGuards(AuthGuard)
   @ApiOperation({
-    summary: 'Deletar um Tenant',
-    description: 'Deleta um tenant existente por ID.',
+    summary: 'Delete a Tenant',
+    description: 'Deletes an existing tenant by id.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Tenant deletado com sucesso.',
+    description: 'Tenant deleted successfully.',
     example: {
-        message: 'Tenant deletado com sucesso.'
+      message: 'Tenant deleted successfully.'
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Requisição inválida para deletar o tenant.',
+    description: 'Invalid request for deleting the tenant.',
     example: {
-      message: 'Os dados fornecido para deletar o tenant são inválidos.',
+      message: 'The data provided for deleting the tenant is invalid.',
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Acesso negado.',
+    description: 'request denied.',
     example: {
-      message: 'Usuário não autorizado.',
+      message: 'Unauthorized.',
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal server error.',
     example: {
-      message: 'Erro interno do servidor.',
+      message: 'Internal server error.',
     }
   })
+  
   @Delete(':id/delete')
   async delete(@Param('id') id: string) {
     return this.tenantService.delete(id)

@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 export class UpdateNotificationDTO {
 
   @ApiProperty({
-    description: 'Receber Email',
+    description: 'Receive Email',
     example: true
   })
   receiveEmail: boolean

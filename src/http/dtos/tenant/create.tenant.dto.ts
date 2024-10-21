@@ -3,25 +3,25 @@ import { ApiProperty } from "@nestjs/swagger"
 export class CreateTenantDTO {
 
   @ApiProperty({
-    description: 'Nome do Tenant',
+    description: 'Tenant Name',
     example: 'Sympla'
   })
   name: string
 
   @ApiProperty({
-    description: 'Info de Contato',
-    example: 'email@exemplo.com'
+    description: 'Contact Info',
+    example: 'example@email.com'
   })
   contactInfo: string
 
   @ApiProperty({
-    description: 'Preferência de Pagamento',
+    description: 'Payment Preference',
     example: 'Bitcoin'
   })
   paymentPreference?: string
 
   @ApiProperty({
-    description: 'Receber Notificação',
+    description: 'Notification',
     example: true
   })
   notification?: boolean

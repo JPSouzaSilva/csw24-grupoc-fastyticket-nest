@@ -21,19 +21,19 @@ export class CreateTransactionDto {
   ticketId: string
 
   @ApiProperty({
-    description: 'Preço',
+    description: 'Price',
     example: 150.0
   })
   price: number
 
   @ApiProperty({
-    description: 'Data da Transação',
+    description: 'Transaction Date',
     example: '2024-10-21T21:30:30.015Z'
   })
   dateTransaction: Date
 
   @ApiProperty({
-    description: 'Status do Ingresso',
+    description: 'Ticket Status',
     example: 'Disponível'
   })
   status: string

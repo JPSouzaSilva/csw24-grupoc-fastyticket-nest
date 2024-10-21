@@ -8,7 +8,7 @@ export class PreferencesDTO {
   pushNotification: boolean
 
   @ApiProperty({
-    description: 'Notificação de Email',
+    description: 'Email Notification',
     example: true
   })
   emailNotification: boolean

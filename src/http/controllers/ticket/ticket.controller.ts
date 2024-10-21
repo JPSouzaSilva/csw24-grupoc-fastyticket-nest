@@ -22,50 +22,51 @@ export class TicketController {
 
   @UseGuards(AuthGuard)
   @ApiOperation({
-    summary: 'Disponibilizar Conjunto de Ingressos',
-    description: 'Disponibiliza novos ingressos para um evento.',
+    summary: 'Make Tickets Available',
+    description: 'Makes new tickets available for an event.',
   })
   @ApiResponse({
     status: 201,
-    description: 'Ingressos disponibilizados com sucesso.',
+    description: 'Tickets made available successfully.',
     example: {
-      message: 'Ingressos disponibilizados com sucesso'
+      message: 'Tickets made available successfully.'
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados fornecidos inválidos.',
+    description: 'Invalid data provided.',
     example: {
-      message: 'Os dados fornecido para novos ingressos são inválidos.',
+      message: 'The data provided for the new tickets is invalid.',
     }
   })
   @ApiResponse({
     status: 401,
-    description: 'Acesso negado.',
+    description: 'Request denied.',
     example: {
-      message: 'Usuário não autorizado.',
+      message: 'Unauthorized.',
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor.',
+    description: 'Internal server error.',
     example: {
-      message: 'Erro interno do servidor.',
+      message: 'Internal server error.',
     }
   })
   @ApiBody({
-    description: 'Dados para disponibilização de novos ingressos.',
-    required: true,
+    description: 'Data for making new tickets available.',
+    required: true,  
     type: CreateTicketDto,
     schema: {
       type: 'object',
       properties: {
-        eventoId: { type: 'string', example: 'clj0f5w9b0000ldqk8zse72y4' },
+        eventId: { type: 'string', example: 'clj0f5w9b0000ldqk8zse72y4' },
         tenantId: { type: 'string', example: 'clj0f6k5d0001ldqkc3yh9r6g' },
-        precoOriginal: { type: 'number', example: '150.0' },
-        idVendedor: { type: 'string', example: 'clj0f6n1e0002ldqkce8w3fs7' },
-        codigoDeVerificacao: { type: 'string', example: 'clj0f6p7f0003ldqkcx1x2t8b' },
-        status: { type: 'string', example: 'disponível' }
+        price: { type: 'number', example: '150.0' },
+        selletId: { type: 'string', example: 'clj0f6n1e0002ldqkce8w3fs7' },
+        code: { type: 'string', example: 'clj0f6p7f0003ldqkcx1x2t8b' },
+        status: { type: 'string', example: 'disponível' },
+        description: { type: 'string', example: 'Show' }
       }
     }
   })
@@ -75,57 +76,59 @@ export class TicketController {
   }
 
   @ApiOperation({
-    summary: 'Buscar Ingressos por Evento',
-    description: 'Busca todos os ingressos de um evento.',
-  })
-  @ApiResponse({
+    summary: 'Search Tickets by Event',
+    description: 'Fetches all tickets for an event.',
+})
+@ApiResponse({
     status: 200,
-    description: 'Ingressos listados com sucesso.',
+    description: 'Tickets listed successfully.',
     example: [
         {
           ticketId: '1',
-          eventoId: '123',
+          eventId: '123',
           tenantId: '321',
-          precoOriginal: 150.0,
-          idDoVendedor: '111',
-          codigoUnicoDeVerificacao: 'abc123',
-          status: 'disponível'
+          price: 150.0,
+          sellerId: '111',
+          code: 'abc123',
+          status: 'disponível',
+          description: 'show'
         },
         {
           ticketId: '2',
-          eventoId: '321',
+          eventId: '321',
           tenantId: '333',
-          precoOriginal: 180.0,
-          idDoVendedor: '222',
-          codigoUnicoDeVerificacao: 'cbd321',
-          status: 'disponível'
+          price: 180.0,
+          sellerIdr: '222',
+          code: 'cbd321',
+          status: 'disponível',
+          description: 'show'
         }
       ]
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados fornecidos inválidos.',
+    description: 'Invalid provided data.',
     example: {
-      message: 'Os dados fornecido para pesqusiar ingresso são inválidos.',
+        message: 'The data provided to search for tickets is invalid.',
     }
   })
   @ApiResponse({
-    status: 401,
-    description: 'Acesso negado.',
-    example: {
-      message: 'Usuário não autorizado.',
-    }
+      status: 401,
+      description: 'Request denied.',
+      example: {
+          message: 'Unauthorized.',
+      }
   })
   @ApiResponse({
-    status: 500,
-    description: 'Erro interno do servidor.',
-    example: {
-      message: 'Erro interno do servidor.',
-    }
+      status: 500,
+      description: 'Internal server error.',
+      example: {
+          message: 'Internal server error.',
+      }
   })
   @ApiParam({
     name: 'id',
-    description: 'Identificador do Evento',
+    description: 'Event Id',
     example: '123'
   })
   @Get('event/:id')
@@ -135,46 +138,46 @@ export class TicketController {
 
   @UseGuards(AuthGuard)
   @ApiOperation({
-    summary: 'Comprar Ingresso',
-    description: 'Compra de um ingresso.',
+    summary: 'Buy Ticket',
+    description: 'Purchase a ticket.',
   })
   @ApiResponse({
-    status: 200,
-    description: 'Ingressos comprado com sucesso.',
-    example: {
-        message: 'Compra realizada com sucesso.'
-    } 
+      status: 200,
+      description: 'Tickets purchased successfully.',
+      example: {
+          message: 'Purchase completed successfully.'
+      } 
   })
   @ApiResponse({
-    status: 400,
-    description: 'Dados fornecidos inválidos.',
-    example: {
-      message: 'Os dados fornecido para compra do ingresso são inválidos.',
-    }
+      status: 400,
+      description: 'Invalid provided data.',
+      example: {
+          message: 'The data provided for the ticket purchase is invalid.',
+      }
   })
   @ApiResponse({
-    status: 401,
-    description: 'Acesso negado.',
-    example: {
-      message: 'Usuário não autorizado.',
-    }
+      status: 401,
+      description: 'Request denied.',
+      example: {
+          message: 'Unauthorized.',
+      }
   })
   @ApiResponse({
-    status: 500,
-    description: 'Erro interno do servidor.',
-    example: {
-      message: 'Erro interno do servidor.',
-    }
+      status: 500,
+      description: 'Internal server error.',
+      example: {
+          message: 'Internal server error.',
+      }
   })
   @ApiBody({
-    description: 'Dados para a compra do ingresso',
+    description: 'Data for the ticket purchase',
     required: true,
     type: TicketBuyDto,
     schema: {
       type: 'object',
       properties: {
         ticketId: { type: 'string', example: 'clj0f6p7f0003ldqkcx1x2t8b' },
-        compradorId: { type: 'string', example: 'clj0f6rjg0004ldqkds3j5c9t' }
+        buyerId: { type: 'string', example: 'clj0f6rjg0004ldqkds3j5c9t' }
       }
     }
   })
@@ -185,39 +188,39 @@ export class TicketController {
 
   @UseGuards(AuthGuard)
   @ApiOperation({
-    summary: 'Autenticar Ticket',
-    description: 'Autentica um ticket pelo seu código de verificação.',
+    summary: 'Authenticate Ticket',
+    description: 'Authenticates a ticket by its verification code.',
   })
   @ApiResponse({
-    status: 200,
-    description: 'Ticket autenticado com sucesso.',
-    example: {
-      mensagem: 'Ticket autenticado com sucesso.'
-    }
+      status: 200,
+      description: 'Ticket authenticated successfully.',
+      example: {
+          message: 'Ticket authenticated successfully.'
+      }
   })
   @ApiResponse({
-    status: 400,
-    description: 'Dados fornecidos inválidos.',
-    example: {
-      message: 'Os dados fornecido para autenticação do ingresso são inválidos.',
-    }
+      status: 400,
+      description: 'Invalid provided data.',
+      example: {
+          message: 'The data provided for ticket authentication is invalid.',
+      }
   })
   @ApiResponse({
-    status: 401,
-    description: 'Acesso negado.',
-    example: {
-      message: 'Usuário não autorizado.',
-    }
+      status: 401,
+      description: 'Request denied.',
+      example: {
+          message: 'Unauthorized.',
+      }
   })
   @ApiResponse({
-    status: 500,
-    description: 'Erro interno do servidor.',
-    example: {
-      message: 'Erro interno do servidor.',
-    }
+      status: 500,
+      description: 'Internal server error.',
+      example: {
+          message: 'Internal server error.',
+      }
   })
   @ApiBody({
-    description: 'Dados para autenticação do ingresso',
+    description: 'Data for ticket authentication',
     required: true,
     type: AuthenticTicketDto,
     schema: {

@@ -15,13 +15,13 @@ export class TicketSellDto {
   ticketId: string
 
   @ApiProperty({
-    description: 'Descrição',
+    description: 'Description',
     example: 'Show de Rock'
   })
   description: string
 
   @ApiProperty({
-    description: 'Preço',
+    description: 'Price',
     example: 150.0
   })
   price: number
