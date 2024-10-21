@@ -6,13 +6,16 @@ import {
   UseGuards,
   Get,
   Query,
+  Param,
+  Put,
+  Delete,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { CreateEventDto } from 'src/http/dtos/event/create.event.dto'
 import { EventService } from 'src/application/services/event/event.service'
-import { Roles } from 'src/decorator/roles.decorator'
-import { Role } from 'src/lib/role.enum'
+import type { UpdateEventDTO } from 'src/http/dtos/event/update.event.dto'
+
 @UseGuards(AuthGuard)
 @Controller('event')
 @ApiTags('Event')
@@ -20,7 +23,6 @@ import { Role } from 'src/lib/role.enum'
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @Roles(Role.ADMIN)
   @ApiOperation({
     summary: 'Criar Evento',
     description: 'Criação de um novo evento por um admin.',
@@ -69,6 +71,20 @@ export class EventController {
   @Post('create')
   async create(@Request() req, @Body() createEventDto: CreateEventDto) {
     return this.eventService.create(createEventDto, req.user)
+  }
+
+  @Put(':id/update')
+  async update(
+    @Param('id') id: string,
+    @Request() req,
+    @Body() updateEventDto: UpdateEventDTO,
+  ) {
+    return this.eventService.update(id, updateEventDto, req.user)
+  }
+
+  @Delete(':id/delete')
+  async delete(@Param('id') id: string, @Request() req) {
+    return this.eventService.delete(id, req.user)
   }
 
   @ApiOperation({

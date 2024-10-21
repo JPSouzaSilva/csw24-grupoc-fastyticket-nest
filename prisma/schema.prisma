@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Tenant {
-  tenantId               String        @id
+  tenantId               String        @id @default(cuid())
   name                   String
   contactInfo            String?
   paymentPreference      String?
@@ -22,7 +22,7 @@ model Tenant {
 }
 
 model User {
-  userId                  String                   @id
+  userId                  String                   @id @default(cuid())
   tenantId                String
   tenant                  Tenant                   @relation(fields: [tenantId], references: [tenantId])
   name                    String
@@ -37,7 +37,7 @@ model User {
 }
 
 model Event {
-  eventId   String   @id
+  eventId   String   @id @default(cuid())
   tenantId  String
   tenant    Tenant   @relation(fields: [tenantId], references: [tenantId])
   eventName String
@@ -50,7 +50,7 @@ model Event {
 }
 
 model Ticket {
-  ticketId    String       @id
+  ticketId    String       @id @default(cuid())
   eventId     String
   event       Event        @relation(fields: [eventId], references: [eventId])
   tenantId    String
@@ -66,7 +66,7 @@ model Ticket {
 }
 
 model Transaction {
-  transactionId     String   @id
+  transactionId     String   @id @default(cuid())
   tenantId          String
   tenant            Tenant   @relation(fields: [tenantId], references: [tenantId])
   buyerId           String
@@ -81,7 +81,7 @@ model Transaction {
 }
 
 model NotificationPreferences {
-  preferencesId String  @id
+  preferencesId String  @id @default(cuid())
   userId        String  @unique
   user          User    @relation(fields: [userId], references: [userId])
   receiveEmails Boolean

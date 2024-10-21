@@ -47,9 +47,10 @@ export class UserService {
       userId: user.id,
     })
 
+    const createdUser = await this.userRepository.create(user)
     await this.notificationService.create(notification)
 
-    return this.userRepository.create(user)
+    return createdUser
   }
 
   async getRate(userId: string) {

@@ -1,14 +1,10 @@
 import { Body, Controller, Delete, Post, Put, UseGuards, Param } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger'
 import { TenantService } from 'src/application/services/tenant/tenant.service'
-import { Roles } from 'src/decorator/roles.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { CreateTenantDTO } from 'src/http/dtos/tenant/create.tenant.dto'
 import { UpdateTenantDTO } from 'src/http/dtos/tenant/update.tenant.dto'
-import { Role } from 'src/lib/role.enum'
 
-@UseGuards(AuthGuard)
-@Roles(Role.ADMIN)
 @Controller('tenant')
 @ApiTags('Tenant')
 export class TenantController {
@@ -54,6 +50,7 @@ export class TenantController {
     return this.tenantService.create(data)
   }
 
+  @UseGuards(AuthGuard)
   @ApiOperation({
     summary: 'Atualizar um Tenant',
     description: 'Atualiza os dados de um tenant existente por ID.',
@@ -98,6 +95,7 @@ export class TenantController {
     return this.tenantService.update(id, data)
   }
 
+  @UseGuards(AuthGuard)
   @ApiOperation({
     summary: 'Deletar um Tenant',
     description: 'Deleta um tenant existente por ID.',

@@ -6,6 +6,7 @@ import {
   UseGuards,
   Put,
   Query,
+  ParseBoolPipe,
 } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserRequest } from 'src/decorator/user.decorator'
@@ -167,7 +168,10 @@ export class UserController {
     },
   })
   @Put('preferences')
-  async preferences(@UserRequest() req, @Query('notify') notify: boolean) {
+  async preferences(
+    @UserRequest() req,
+    @Query('notify', ParseBoolPipe) notify: boolean,
+  ) {
     return this.notificationService.preference(req.id, notify)
   }
 }
