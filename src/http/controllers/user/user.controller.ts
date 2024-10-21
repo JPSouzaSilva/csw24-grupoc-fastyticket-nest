@@ -54,6 +54,7 @@ export class UserController {
   @ApiBody({
     description: 'Username e email para Autenticação',
     required: true,
+    type: LoginDto,
     schema: {
       type: 'object',
       properties: {
@@ -104,12 +105,7 @@ export class UserController {
     status: 201,
     description: 'Usuário criado com sucesso.',
     example: {
-      summary: 'Resposta de Sucesso',
-      value: {
-        id: 1,
-        username: 'fulano',
-        email: 'fulano@email.com'
-      }
+      message: 'Usuário regisrtado com sucesso.'
     }
   })
   @ApiResponse({
@@ -120,6 +116,7 @@ export class UserController {
   @ApiBody({
     description: 'Dados do usuário para registro',
     required: true,
+    type: RegisterUserDto,
     schema: {
       type: 'object',
       properties: {

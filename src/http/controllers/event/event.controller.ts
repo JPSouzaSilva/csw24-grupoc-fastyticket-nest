@@ -29,25 +29,28 @@ export class EventController {
     status: 201,
     description: 'Evento criado com sucesso.',
     example: {
-      summary: 'Resposta de Sucesso',
-      value: {
-        eventId: '1',
-        tenantId: '123',
-        nomeDoEvento: 'Numanice',
-        tipo: 'show',
-        localizacao: 'Parque Harmonia'
-      }
+      message: 'Evento criado com sucesso.'
     }
   })
   @ApiResponse({
     status: 400,
     description: 'Dados fornecidos inválidos.',
+    example: {
+      message: 'Dados fornecidos para criação de um evento são inválidos.'
+    }
   })
   @ApiResponse({
-    status: 403,
+    status: 401,
     description: 'Acesso negado.',
     example: {
       message: 'Usuário não possui permissão para criar eventos.'
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.'
     }
   })
   @ApiBody({
@@ -75,9 +78,7 @@ export class EventController {
   @ApiResponse({
     status: 200,
     description: 'Eventos listados com sucesso.',
-    example: {
-      summary: 'Resposta de sucesso',
-      value: [
+    example: [
         {
           eventId: '1',
           tenantId: '123',
@@ -93,11 +94,27 @@ export class EventController {
           localizacao: 'Arena do Grêmio'
         }
       ]
-    }
   })
   @ApiResponse({
     status: 400,
     description: 'Consulta inválida.',
+    example: {
+      message: 'Consulta inválida.'
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Consulta não autorizada.',
+    example: {
+      message: 'Usuário não possui permissão para consultar eventos.'
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.'
+    }
   })
   @ApiQuery({
     name: 'page',
