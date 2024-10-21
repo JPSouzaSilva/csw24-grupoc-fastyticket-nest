@@ -33,10 +33,10 @@ resource "aws_instance" "nestjs_app" {
       "sudo npm install -g prisma", # Garante que Prisma está disponível globalmente
       "cd /home/ec2-user/nestjs-app",
       "npm install", # Instala dependências
+      "docker compose up -d",
       "npx prisma generate", # Gera o cliente Prisma
       "npx prisma migrate deploy", # Executa as migrações
-      "npm run build", # Builda a aplicação
-      "npm run start:prod" # Inicia a aplicação em produção
+      "npm start"
     ]
 
     connection {
