@@ -26,9 +26,21 @@ export class TicketController {
     return this.ticketService.create(createTicketDto, req.user)
   }
 
+  @UseGuards(AuthGuard)
+  @Get()
+  findAllBougthTickets(@Request() req) {
+    return this.ticketService.findAllBougthTickets(req.user)
+  }
+
   @Get('event/:id')
   findById(@Param('id') id: string) {
     return this.ticketService.findByEventId(id)
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('refund/:ticketId')
+  refund(@Request() req, @Param('ticketId') ticketId: string) {
+    return this.ticketService.refundTicket(ticketId, req.user)
   }
 
   @UseGuards(AuthGuard)
@@ -39,7 +51,10 @@ export class TicketController {
 
   @Put('authenticate')
   @UseGuards(AuthGuard)
-  authenticTicket(@Body() authenticTicketDto: AuthenticTicketDto) {
-    return this.ticketService.authenticate(authenticTicketDto)
+  authenticTicket(
+    @Request() req,
+    @Body() authenticTicketDto: AuthenticTicketDto,
+  ) {
+    return this.ticketService.authenticate(authenticTicketDto, req.user)
   }
 }

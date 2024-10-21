@@ -6,6 +6,7 @@ export interface UserProps {
   role: string
   tenantId: string
   rate?: number
+  balance?: number
 }
 
 export class User {
@@ -59,5 +60,13 @@ export class User {
 
   public set rate(rate: number) {
     this.props.rate = rate
+  }
+
+  public get balance(): number {
+    return this.props.balance
+  }
+
+  public set balance(balance: number) {
+    this.props.balance = balance
   }
 }

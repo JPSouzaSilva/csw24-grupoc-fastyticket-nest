@@ -64,6 +64,10 @@ export class TicketService {
     return { tickets }
   }
 
+  async findAllBougthTickets(userToRequest: User) {
+    return this.ticketRepository.findAllBoughtByUser(userToRequest.id)
+  }
+
   async sellTicket(sellTicketDTO: TicketSellDto, userToRequest: User) {
     const { price, eventId, ticketId } = sellTicketDTO
 
@@ -154,6 +158,8 @@ export class TicketService {
         ticketId: newTicket.id,
       })
 
+      await this.ticketRepository.updateUserBalance(owner.id, ticket.price)
+
       const notification = await this.notificationService.findByUserId(owner.id)
 
       if (notification.receiveEmail) {
@@ -180,8 +186,12 @@ export class TicketService {
     return this.transactionService.create(transaction)
   }
 
-  async authenticate(authenticateTicketDto: AuthenticTicketDto) {
-    const { code, eventId, userId } = authenticateTicketDto
+  async authenticate(
+    authenticateTicketDto: AuthenticTicketDto,
+    userToRequest: User,
+  ) {
+    const { code, eventId } = authenticateTicketDto
+    const userId = userToRequest.id
 
     const ticket = await this.ticketRepository.findByCodeAndEventIdAndUserId(
       code,
@@ -206,31 +216,39 @@ export class TicketService {
     return this.ticketRepository.update(ticket.id, newTicket)
   }
 
-  async refundTicket(ticketId: string, userToRequest: User) {
-    const ticket = await this.ticketRepository.findById(ticketId)
-    if (!ticket) {
-      throw new NotFoundException('Ticket not found')
+  async refundTicket(transactionId: string, userToRequest: User) {
+    const tickets =
+      await this.ticketRepository.findByTransactionId(transactionId)
+    let refundTicket
+
+    if (!tickets) {
+      throw new NotFoundException('There is no ticket in this transaction')
     }
 
-    if (ticket.status !== 'Disponivel') {
-      throw new NotFoundException('Ticket is not available for refund')
+    for (let i = 0; i < tickets.length; i++) {
+      const ticket = tickets[i]
+
+      if (ticket.status !== 'Vendido' || ticket.sellerId !== userToRequest.id) {
+        continue
+      }
+
+      refundTicket = ticket
     }
 
-    if (ticket.sellerId !== userToRequest.id) {
-      throw new UnauthorizedException('You are not the owner of this ticket')
+    if (refundTicket === undefined) {
+      throw new UnauthorizedException('This ticket cannot be refunded')
     }
 
-    const newTicket = new Ticket({
-      code: ticket.code,
-      price: ticket.price,
-      status: 'Disponivel',
-      eventId: ticket.eventId,
-      tenantId: ticket.tenantId,
-      description: ticket.description,
-      sellerId: null,
-    })
+    refundTicket.status = 'Disponivel'
 
-    return this.ticketRepository.update(ticketId, newTicket)
+    await this.ticketRepository.update(refundTicket.id, refundTicket)
+
+    await this.ticketRepository.updateUserBalance(
+      userToRequest.id,
+      refundTicket.price,
+    )
+
+    return await this.transactionService.refundTransaction(transactionId)
   }
 
   async findByEventId(eventId: string) {
@@ -238,6 +256,8 @@ export class TicketService {
   }
 
   async sendMailToTicketOwner(ownerMail: string, eventName: string) {
+    console.log('Sending email to ticket owner')
+    console.log('Owner email:', ownerMail)
     await this.mailService.sendMail({
       to: ownerMail,
       subject: 'Ingresso Vendido',

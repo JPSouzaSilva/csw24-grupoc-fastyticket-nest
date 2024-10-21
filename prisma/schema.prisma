@@ -28,6 +28,7 @@ model User {
   name                    String
   email                   String                   @unique
   role                    String
+  balance                 Float                    @default(0)
   rate                    Int?
   soldTickets             Ticket[]                 @relation("sellerTickets")
   boughtTransactions      Transaction[]            @relation("buyerTransactions")

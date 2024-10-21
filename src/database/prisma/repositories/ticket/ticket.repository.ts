@@ -17,6 +17,42 @@ export class TicketRepository implements ITicketRepository {
     return TicketMapper.toDomain(ticketCreated)
   }
 
+  async findByTransactionId(transactionId: string): Promise<Ticket[]> {
+    const transaction = await this.prisma.transaction.findMany({
+      where: {
+        transactionId,
+      },
+      include: {
+        ticket: true,
+      },
+    })
+
+    return transaction.map((transaction) =>
+      TicketMapper.toDomain(transaction.ticket),
+    )
+  }
+
+  async findAllBoughtByUser(
+    userId: string,
+  ): Promise<{ ticket: Ticket; transactionId: string }[]> {
+    const transactions = await this.prisma.transaction.findMany({
+      where: {
+        buyerId: userId,
+        transactionStatus: {
+          not: 'Refunded',
+        },
+      },
+      include: {
+        ticket: true,
+      },
+    })
+
+    return transactions.map((transaction) => ({
+      ticket: TicketMapper.toDomain(transaction.ticket),
+      transactionId: transaction.transactionId,
+    }))
+  }
+
   async findByEventId(eventId: string): Promise<Ticket[]> {
     const tickets = await this.prisma.ticket.findMany({
       where: {
@@ -38,13 +74,33 @@ export class TicketRepository implements ITicketRepository {
   }
 
   async update(id: string, ticket: Ticket): Promise<Ticket> {
-    const toPersistence = TicketMapper.toPersistence(ticket)
-
     const ticketUpdated = await this.prisma.ticket.update({
       where: {
         ticketId: id,
       },
-      data: toPersistence,
+      data: {
+        event: {
+          connect: {
+            eventId: ticket.eventId,
+          },
+        },
+        tenant: {
+          connect: {
+            tenantId: ticket.tenantId,
+          },
+        },
+        seller: ticket.sellerId
+          ? {
+              connect: {
+                userId: ticket.sellerId,
+              },
+            }
+          : undefined,
+        price: ticket.price,
+        code: ticket.code,
+        status: ticket.status,
+        description: ticket.description,
+      },
     })
 
     return TicketMapper.toDomain(ticketUpdated)
@@ -68,6 +124,19 @@ export class TicketRepository implements ITicketRepository {
     })
 
     return tickets.map((ticket) => TicketMapper.toDomain(ticket))
+  }
+
+  async updateUserBalance(userId: string, value: number): Promise<void> {
+    await this.prisma.user.update({
+      where: {
+        userId,
+      },
+      data: {
+        balance: {
+          increment: value,
+        },
+      },
+    })
   }
 
   async findByCodeAndEventIdAndUserId(
