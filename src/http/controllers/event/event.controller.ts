@@ -6,23 +6,39 @@ import {
   UseGuards,
   Get,
   Query,
+  Param,
+  Put,
+  Delete,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { Roles } from 'src/decorator/roles.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
-import { CreateEventDto } from 'src/http/dtos/create.event.dto'
-import { Role } from 'src/lib/role.enum'
-import { EventService } from 'src/services/event/event.service'
+import { CreateEventDto } from 'src/http/dtos/event/create.event.dto'
+import { EventService } from 'src/application/services/event/event.service'
+import type { UpdateEventDTO } from 'src/http/dtos/event/update.event.dto'
+
 @UseGuards(AuthGuard)
 @Controller('event')
 @ApiTags('Event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @Roles(Role.ADMIN)
   @Post('create')
-  create(@Request() req, @Body() createEventDto: CreateEventDto) {
-    return this.eventService.create(req, createEventDto)
+  async create(@Request() req, @Body() createEventDto: CreateEventDto) {
+    return this.eventService.create(createEventDto, req.user)
+  }
+
+  @Put(':id/update')
+  async update(
+    @Param('id') id: string,
+    @Request() req,
+    @Body() updateEventDto: UpdateEventDTO,
+  ) {
+    return this.eventService.update(id, updateEventDto, req.user)
+  }
+
+  @Delete(':id/delete')
+  async delete(@Param('id') id: string, @Request() req) {
+    return this.eventService.delete(id, req.user)
   }
 
   @Get('all')
