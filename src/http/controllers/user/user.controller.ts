@@ -39,6 +39,12 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('balance')
+  async getBalance(@UserRequest() req) {
+    return this.userService.getBalance(req.id)
+  }
+
+  @UseGuards(AuthGuard)
   @Put('preferences')
   async preferences(
     @UserRequest() req,

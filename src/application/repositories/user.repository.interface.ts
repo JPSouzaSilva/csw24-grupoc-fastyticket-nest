@@ -10,7 +10,7 @@ export abstract class IUserRepository {
 
   abstract findById(id: string): Promise<User | null>
   abstract update(id: string, user: User): Promise<User | null>
-
+  abstract getBalance(id: string): Promise<number>
   abstract delete(id: string): Promise<boolean>
   abstract getRate(id: string): Promise<number>
 }
