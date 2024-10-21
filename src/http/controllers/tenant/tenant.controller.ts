@@ -73,7 +73,7 @@ export class TenantController {
         name: 'Fulano Atualizado',
         contactInfo: 'fulanoatual@email.com',
         specConfig: {
-          pagamento: 'Cartão',
+          pagamento: 'Crédito',
           notification: false
         }
       }

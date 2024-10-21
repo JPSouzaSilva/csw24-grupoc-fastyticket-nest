@@ -2,19 +2,19 @@ import { ApiProperty } from "@nestjs/swagger"
 
 export class RegisterUserDto {
   @ApiProperty({
-    description: 'Nome do Usuario',
-    example: 'Joao da Silva'
+    description: 'Nome do Usuário',
+    example: 'João da Silva'
   })
   name: string
 
   @ApiProperty({
-    description: 'Email do Usuario',
+    description: 'Email do Usuário',
     example: 'joaosilva@email.com'
   })
   email: string
 
   @ApiProperty({
-    description: 'Papel do Usuario',
+    description: 'Papel do Usuário',
     example: 'ADMIN'
   })
   role: string
