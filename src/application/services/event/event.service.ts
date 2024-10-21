@@ -35,6 +35,7 @@ export class EventService {
       location,
       tenantId: userToRequest.tenantId,
       type,
+      ownerId: userToRequest.id,
     })
 
     return this.eventRepository.create(event)

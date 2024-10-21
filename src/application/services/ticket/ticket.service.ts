@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -25,6 +26,14 @@ export class TicketService {
   ) {}
 
   async create(createTicketDto: CreateTicketDto, user: User) {
+    const event = await this.eventService.findById(createTicketDto.eventId)
+
+    if (event.ownerId !== user.id) {
+      throw new UnauthorizedException(
+        'You do not have permission to create a ticket for this event',
+      )
+    }
+
     const tickets = []
     for (let i = 0; i < createTicketDto.numberOfTickets; i++) {
       tickets[i] = new Ticket({
@@ -89,7 +98,13 @@ export class TicketService {
       const ticket = await this.ticketRepository.findById(tickets[i])
 
       if (!ticket) {
-        throw new NotFoundException('Ticket not found')
+        throw new NotFoundException(`Ticket ${ticket.id} not found`)
+      }
+
+      if (ticket.status !== 'Disponivel') {
+        throw new BadRequestException(
+          `Ticket ${ticket.id}is not available for sale`,
+        )
       }
 
       const newTicket = new Ticket(

@@ -10,6 +10,7 @@ export class EventMapper {
         location: event.location,
         tenantId: event.tenantId,
         type: event.type,
+        ownerId: event.onwerId,
       },
       event.eventId,
     )
@@ -23,6 +24,7 @@ export class EventMapper {
       location: event.location,
       tenantId: event.tenantId,
       type: event.type,
+      onwerId: event.ownerId,
     }
   }
 }
