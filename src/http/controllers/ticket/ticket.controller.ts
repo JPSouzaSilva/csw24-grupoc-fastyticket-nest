@@ -22,31 +22,39 @@ export class TicketController {
 
   @UseGuards(AuthGuard)
   @ApiOperation({
-    summary: 'Criar Ticket',
-    description: 'Cria um novo ticket para um evento.',
+    summary: 'Disponibilizar Conjunto de Ingressos',
+    description: 'Disponibiliza novos ingressos para um evento.',
   })
   @ApiResponse({
     status: 201,
-    description: 'Ticket criado com sucesso.',
+    description: 'Ingressos disponibilizados com sucesso.',
     example: {
-      summary: 'Resposta de Sucesso',
-      value: {
-        ticketId: '1',
-        eventoId: '123',
-        tenantId: '456',
-        precoOriginal: 150.0,
-        idDoVendedor: '789',
-        codigoUnicoDeVerificacao: 'abc123',
-        status: 'disponível'
-      }
+      message: 'Ingressos disponibilizados com sucesso'
     }
   })
   @ApiResponse({
     status: 400,
     description: 'Dados fornecidos inválidos.',
+    example: {
+      message: 'Os dados fornecido para novos ingressos são inválidos.',
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso negado.',
+    example: {
+      message: 'Usuário não possui permissão para disponibilizar novos ingressos o tenant.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.',
+    }
   })
   @ApiBody({
-    description: 'Dados para criação de um ticket',
+    description: 'Dados para disponibilização de novos ingressos.',
     required: true,
     type: CreateTicketDto,
     schema: {
@@ -67,15 +75,13 @@ export class TicketController {
   }
 
   @ApiOperation({
-    summary: 'Buscar Tickets por Evento',
-    description: 'Busca todos os tickets de um evento.',
+    summary: 'Buscar Ingressos por Evento',
+    description: 'Busca todos os ingressos de um evento.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Tickets listados com sucesso.',
-    example: {
-      summary: 'Resposta de Sucesso',
-      value: [
+    description: 'Ingressos listados com sucesso.',
+    example: [
         {
           ticketId: '1',
           eventoId: '123',
@@ -84,9 +90,17 @@ export class TicketController {
           idDoVendedor: '111',
           codigoUnicoDeVerificacao: 'abc123',
           status: 'disponível'
+        },
+        {
+          ticketId: '2',
+          eventoId: '321',
+          tenantId: '333',
+          precoOriginal: 180.0,
+          idDoVendedor: '222',
+          codigoUnicoDeVerificacao: 'cbd321',
+          status: 'disponível'
         }
       ]
-    }
   })
   @ApiResponse({
     status: 404,
@@ -104,27 +118,39 @@ export class TicketController {
 
   @UseGuards(AuthGuard)
   @ApiOperation({
-    summary: 'Comprar Ticket',
-    description: 'Compra de um ticket',
+    summary: 'Comprar Ingresso',
+    description: 'Compra de um ingresso.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Ticket comprado com sucesso.',
+    description: 'Ingressos comprado com sucesso.',
     example: {
-      summary: 'Resposta de Sucesso',
-      value: {
-        message: 'Compra realizada com sucesso.',
-        ticketId: '1',
-        compradorId: 'user123'
-      }
-    }
+        message: 'Compra realizada com sucesso.'
+    } 
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados inválidos para a compra.',
+    description: 'Dados fornecidos inválidos.',
+    example: {
+      message: 'Os dados fornecido para compra do ingresso são inválidos.',
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso negado.',
+    example: {
+      message: 'Usuário não possui permissão para comprar o ingresso.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.',
+    }
   })
   @ApiBody({
-    description: 'Dados para a compra do ticket',
+    description: 'Dados para a compra do ingresso',
     required: true,
     type: TicketBuyDto,
     schema: {
@@ -149,20 +175,32 @@ export class TicketController {
     status: 200,
     description: 'Ticket autenticado com sucesso.',
     example: {
-      summary: 'Resposta de Sucesso',
-      value: {
-        ticketId: '1',
-        autenticado: true,
-        mensagem: 'Ticket autenticado com sucesso.'
-      }
+      mensagem: 'Ticket autenticado com sucesso.'
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados inválidos para autenticação.',
+    description: 'Dados fornecidos inválidos.',
+    example: {
+      message: 'Os dados fornecido para autenticação do ingresso são inválidos.',
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso negado.',
+    example: {
+      message: 'Usuário não possui permissão para autenticar o ingresso.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.',
+    }
   })
   @ApiBody({
-    description: 'Dados para autenticação do ticket',
+    description: 'Dados para autenticação do ingresso',
     required: true,
     type: AuthenticTicketDto,
     schema: {

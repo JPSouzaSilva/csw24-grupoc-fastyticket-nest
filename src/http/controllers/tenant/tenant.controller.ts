@@ -18,21 +18,29 @@ export class TenantController {
     status: 201,
     description: 'Tenant criado com sucesso.',
     example: {
-      summary: 'Resposta de sucesso',
-      value: {
-        id: '123',
-        name: 'Fulano da Silva',
-        contactInfo: 'fulano@email.com',
-        specConfig: {
-          pagamento: 'Pix',
-          notification: true
-        }
-      }
+      message: 'Tenant criado com sucesso.'
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados inválidos.'
+    description: 'Dados inválidos.',
+    example: {
+      message: 'Dados fornecido para criação de um tenant são inválidos.',
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso negado.',
+    example: {
+      message: 'Usuário não possui permissão para criar um tenant.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.',
+    }
   })
   @ApiBody({
     description: 'Dados para criação de um novo tenant',
@@ -73,11 +81,24 @@ export class TenantController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados inválidos para atualização.',
+    description: 'Dados fornecidos inválidos.',
+    example: {
+      message: 'Os dados fornecido para atualização são inválidos.',
+    }
   })
   @ApiResponse({
-    status: 404,
-    description: 'Tenant não encontrado.',
+    status: 401,
+    description: 'Acesso negado.',
+    example: {
+      message: 'Usuário não possui permissão para atualizar o tenant.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.',
+    }
   })
   @ApiBody({
     description: 'Dados para atualização do tenant',
@@ -87,8 +108,8 @@ export class TenantController {
       properties: {
         name: { type: 'string', example: 'Fulano Atualizado' },
         description: { type: 'string', example: 'Nova descrição' },
-      },
-    },
+      }
+    }
   })
   @Put(':id/update')
   async update(@Body() data: UpdateTenantDTO, id: string) {
@@ -104,15 +125,29 @@ export class TenantController {
     status: 200,
     description: 'Tenant deletado com sucesso.',
     example: {
-      summary: 'Resposta de sucesso',
-      value: {
-        message: 'Tenant deletado com sucesso.',
-      },
-    },
+        message: 'Tenant deletado com sucesso.'
+    }
   })
   @ApiResponse({
-    status: 404,
-    description: 'Tenant não encontrado.',
+    status: 400,
+    description: 'Requisição inválida para deletar o tenant.',
+    example: {
+      message: 'Os dados fornecido para deletar o tenant são inválidos.',
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso negado.',
+    example: {
+      message: 'Usuário não possui permissão para deletar o tenant.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.',
+    }
   })
   @Delete(':id/delete')
   async delete(@Param('id') id: string) {

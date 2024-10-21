@@ -35,8 +35,7 @@ export class UserController {
     example: {
       summary: 'Resposta bem-sucedida',
       value: {
-        accessToken: 'jwt_token_exemplo',
-        expiresIn: 3600
+        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5vbWUifQ.bt-F3HkbV-vz7IzKJfik_8grERv-YAxsR2j8c-sqNLM'
       }
     }
   })
@@ -44,13 +43,15 @@ export class UserController {
     status: 400,
     description: 'Requisição Inválida',
     example: {
-      summary: 'Usuário não encontrado',
-      value: { message: 'Usuário não encontrado.'}
+      message: 'Usuário não encontrado.'
     }
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro Interno do Servidor'
+    description: 'Erro Interno do Servidor',
+    example: {
+      message: 'Erro interno do servidor.'
+    }
   })
   @ApiBody({
     description: 'Username e email para Autenticação',
@@ -87,10 +88,24 @@ export class UserController {
     }
   })
   @ApiResponse({
-    status: 401,
-    description: 'Não autorizado.',
+    status: 400,
+    description: 'Dados fornecidos inválidos.',
     example: {
-      message: 'Token de autenticação inválido ou ausente.'
+      message: 'Os dados fornecido do perfil do usuário são inválidos.',
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso negado.',
+    example: {
+      message: 'Usuário não possui permissão para acessar as informações do perfil.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.',
     }
   })
   @Get('profile')
@@ -104,15 +119,31 @@ export class UserController {
   })
   @ApiResponse({
     status: 201,
-    description: 'Usuário criado com sucesso.',
+    description: 'Usuário registrado com sucesso.',
     example: {
-      message: 'Usuário regisrtado com sucesso.'
+      message: 'Usuário registrado com sucesso.'
     }
   })
   @ApiResponse({
     status: 400,
-    description: 'Requisição inválida',
-    example: 'Dados inválidos para registro.'
+    description: 'Dados fornecidos inválidos.',
+    example: {
+      message: 'Os dados fornecido para registrar o usuário são inválidos.',
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso negado.',
+    example: {
+      message: 'Usuário não possui permissão para registrar um novo usuário.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.',
+    }
   })
   @ApiBody({
     description: 'Dados do usuário para registro',
@@ -146,13 +177,23 @@ export class UserController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Dados inválidos fornecidos.',
+    description: 'Dados fornecidos inválidos.',
+    example: {
+      message: 'Os dados fornecido para atualizar as preferências são inválidos.',
+    }
   })
   @ApiResponse({
     status: 401,
-    description: 'Não autorizado.',
+    description: 'Acesso negado.',
     example: {
-      message: 'Token de autenticação inválido ou ausente.'
+      message: 'Usuário não possui permissão para atualizar suas preferências.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Erro interno do servidor.',
+    example: {
+      message: 'Erro interno do servidor.',
     }
   })
   @ApiBody({
