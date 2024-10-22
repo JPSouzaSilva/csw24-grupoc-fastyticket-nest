@@ -163,7 +163,7 @@ export class TicketService {
       const notification = await this.notificationService.findByUserId(owner.id)
 
       if (notification.receiveEmail) {
-        await this.sendMailToTicketOwner(owner.email, event.name)
+        this.sendMailToTicketOwner(owner.email, event.name)
       }
     }
 
@@ -243,7 +243,7 @@ export class TicketService {
 
     await this.ticketRepository.update(refundTicket.id, refundTicket)
 
-    await this.ticketRepository.updateUserBalance(
+    this.ticketRepository.updateUserBalance(
       userToRequest.id,
       refundTicket.price,
     )

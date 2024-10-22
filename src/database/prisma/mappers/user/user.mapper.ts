@@ -11,6 +11,7 @@ export class UserMapper {
         tenantId: user.tenantId,
         rate: user.rate,
         balance: user.balance,
+        verified: user.verified,
       },
       user.userId,
     )
@@ -25,6 +26,7 @@ export class UserMapper {
       tenantId: user.tenantId,
       rate: user.rate,
       balance: user.balance,
+      verified: user.verified,
     }
   }
 }
