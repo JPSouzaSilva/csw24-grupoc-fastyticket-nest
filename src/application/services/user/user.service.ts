@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { NotificationPreferences } from 'src/application/models/NotificationPreferences'
 import { User } from 'src/application/models/User'
 import { IUserRepository } from 'src/application/repositories/user.repository.interface'
@@ -15,15 +20,52 @@ export class UserService {
     private readonly authService: AuthService,
   ) {}
 
-  async findByEmailOrUsername(username: string, email: string) {
-    return this.userRepository.findByEmailOrUsername(email, username)
+  async findByVerified(verified: string) {
+    return this.userRepository.findByVerified(verified)
+  }
+
+  async registerAdmin(data: RegisterUserDto, userRequest: User) {
+    const { email, name, tenantId } = data
+
+    console.log(userRequest)
+
+    if (userRequest.role !== 'SUPADMIN') {
+      throw new UnauthorizedException('Unauthorized')
+    }
+
+    const verified = email.concat(name).concat(tenantId)
+
+    const user = new User({
+      email,
+      name,
+      role: 'ADMIN',
+      tenantId,
+      verified,
+    })
+
+    const notification = new NotificationPreferences({
+      receiveEmail: false,
+      userId: user.id,
+    })
+
+    if (await this.userRepository.findByVerified(verified)) {
+      throw new BadRequestException('User already exists')
+    }
+
+    const createdUser = await this.userRepository.create(user)
+    await this.notificationService.create(notification)
+
+    return createdUser
   }
 
   async login(login: LoginDto) {
-    const user = await this.userRepository.findByEmailOrUsername(
-      login.email,
-      login.username,
-    )
+    if (!login.email || !login.username) {
+      throw new BadRequestException('Invalid credentials')
+    }
+
+    const verified = login.email.concat(login.username).concat(login.tenantId)
+
+    const user = await this.userRepository.findByVerified(verified)
 
     if (!user) {
       throw new NotFoundException('User not found')
@@ -33,19 +75,26 @@ export class UserService {
   }
 
   async register(data: RegisterUserDto) {
-    const { email, name, role, tenantId } = data
+    const { email, name, tenantId } = data
+
+    const verified = email.concat(name).concat(tenantId)
 
     const user = new User({
       email,
       name,
-      role,
+      role: 'USER',
       tenantId,
+      verified,
     })
 
     const notification = new NotificationPreferences({
       receiveEmail: false,
       userId: user.id,
     })
+
+    if (await this.userRepository.findByVerified(verified)) {
+      throw new BadRequestException('User already exists')
+    }
 
     const createdUser = await this.userRepository.create(user)
     await this.notificationService.create(notification)
@@ -62,6 +111,8 @@ export class UserService {
   }
 
   async getBalance(userId: string) {
-    return this.userRepository.getBalance(userId)
+    const balance = await this.userRepository.getBalance(userId)
+
+    return { balance }
   }
 }

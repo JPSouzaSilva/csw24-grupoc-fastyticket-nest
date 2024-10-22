@@ -7,6 +7,7 @@ export interface UserProps {
   tenantId: string
   rate?: number
   balance?: number
+  verified: string
 }
 
 export class User {
@@ -68,5 +69,9 @@ export class User {
 
   public set balance(balance: number) {
     this.props.balance = balance
+  }
+
+  public get verified(): string {
+    return this.props.verified
   }
 }

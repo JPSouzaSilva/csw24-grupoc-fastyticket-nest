@@ -25,8 +25,9 @@ model User {
   userId                  String                   @id @default(cuid())
   tenantId                String
   tenant                  Tenant                   @relation(fields: [tenantId], references: [tenantId])
+  verified                String                   @unique @default("xd")
   name                    String
-  email                   String                   @unique
+  email                   String                   
   role                    String
   balance                 Float                    @default(0)
   rate                    Int?
