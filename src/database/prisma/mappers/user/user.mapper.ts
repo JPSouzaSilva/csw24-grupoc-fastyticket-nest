@@ -10,6 +10,7 @@ export class UserMapper {
         role: user.role,
         tenantId: user.tenantId,
         rate: user.rate,
+        balance: user.balance,
       },
       user.userId,
     )
@@ -23,6 +24,7 @@ export class UserMapper {
       role: user.role,
       tenantId: user.tenantId,
       rate: user.rate,
+      balance: user.balance,
     }
   }
 }

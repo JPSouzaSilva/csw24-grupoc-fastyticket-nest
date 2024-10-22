@@ -147,6 +147,12 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('balance')
+  async getBalance(@UserRequest() req) {
+    return this.userService.getBalance(req.id)
+  }
+
+  @UseGuards(AuthGuard)
   @ApiOperation({
     summary: 'User Preferences',
     description: 'Updates preferences of a user.',

@@ -60,4 +60,8 @@ export class UserService {
   async findById(userId: string) {
     return await this.userRepository.findById(userId)
   }
+
+  async getBalance(userId: string) {
+    return this.userRepository.getBalance(userId)
+  }
 }

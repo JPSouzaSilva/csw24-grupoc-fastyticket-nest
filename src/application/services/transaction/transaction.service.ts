@@ -22,6 +22,18 @@ export class TransactionService {
     return this.transactionRepository.create(transaction)
   }
 
+  async refundTransaction(id: string) {
+    const transaction = await this.transactionRepository.findById(id)
+
+    if (!transaction) {
+      throw new Error('Transaction not found')
+    }
+
+    transaction.status = 'Refunded'
+
+    return this.transactionRepository.update(transaction.id, transaction)
+  }
+
   async findById(id: string) {
     return this.transactionRepository.findById(id)
   }
