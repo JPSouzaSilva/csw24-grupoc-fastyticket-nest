@@ -10,11 +10,11 @@ import {
 } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserRequest } from 'src/decorator/user.decorator'
-import { AuthGuard } from 'src/guard/auth.guard'
 import { LoginDto } from 'src/http/dtos/login.user.dto'
 import { UserService } from 'src/application/services/user/user.service'
 import { RegisterUserDto } from 'src/http/dtos/user/register.user.dto'
 import { NotificationService } from 'src/application/services/notification/notification.service'
+import { AuthGuard } from 'src/guard/auth.guard'
 import { ReturnRegisterUserDto } from 'src/http/dtos/user/register-return.dto'
 
 @Controller('user')
@@ -102,7 +102,8 @@ export class UserController {
   })
   @Get('profile')
   async getUser(@UserRequest() req) {
-    return this.userService.findByEmailOrUsername(req.name, req.email)
+    const verified = req.email.concat(req.username).concat(req.tenantId)
+    return this.userService.findByVerified(verified)
   }
 
   @ApiOperation({
@@ -143,6 +144,13 @@ export class UserController {
   @Post('register')
   async register(@Body() data: RegisterUserDto) {
     return this.userService.register(data)
+  }
+
+
+  @UseGuards(AuthGuard)
+  @Post('register/admin')
+  async registerAdmin(@UserRequest() req, @Body() data: RegisterUserDto) {
+    return this.userService.registerAdmin(data, req)
   }
 
   @UseGuards(AuthGuard)

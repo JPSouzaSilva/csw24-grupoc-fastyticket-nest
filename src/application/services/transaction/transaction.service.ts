@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { Transaction } from 'src/application/models/Transaction'
 import { ITransactionRepository } from 'src/application/repositories/transaction.repository.interface'
 import { CreateTransactionDto } from 'src/http/dtos/transaction/create.transaction.dto'
@@ -26,7 +26,7 @@ export class TransactionService {
     const transaction = await this.transactionRepository.findById(id)
 
     if (!transaction) {
-      throw new Error('Transaction not found')
+      throw new NotFoundException('Transaction not found')
     }
 
     transaction.status = 'Refunded'

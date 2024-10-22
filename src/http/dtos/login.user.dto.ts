@@ -14,4 +14,5 @@ export class LoginDto {
     example: 'joaosilva@email.com'
   })
   email: string
+  tenantId: string
 }
