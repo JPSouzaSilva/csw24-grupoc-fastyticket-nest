@@ -10,13 +10,18 @@ import {
   Put,
   Delete,
 } from '@nestjs/common'
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBody,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { CreateEventDto } from 'src/http/dtos/event/create.event.dto'
 import { EventService } from 'src/application/services/event/event.service'
-import type { UpdateEventDTO } from 'src/http/dtos/event/update.event.dto'
+import { UpdateEventDTO } from 'src/http/dtos/event/update.event.dto'
 
-@UseGuards(AuthGuard)
 @Controller('event')
 @ApiTags('Event')
 export class EventController {
@@ -29,9 +34,6 @@ export class EventController {
   @ApiResponse({
     status: 201,
     description: 'Event created successfully.',
-    example: {
-      message: 'Event created successfully.',
-    },
   })
   @ApiResponse({
     status: 400,
@@ -50,11 +52,47 @@ export class EventController {
     required: true,
     type: CreateEventDto,
   })
+  @UseGuards(AuthGuard)
   @Post('create')
   async create(@Request() req, @Body() createEventDto: CreateEventDto) {
     return this.eventService.create(createEventDto, req.user)
   }
 
+  @ApiOperation({
+    summary: 'Update Event',
+    description: 'Update data from an event.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Event updated successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid data provided.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Request denied.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server erro.',
+  })
+  @ApiBody({
+    description: 'Data to update an event',
+    required: true,
+    type: UpdateEventDTO,
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', example: 'Numanice 2' },
+        type: { type: 'string', example: 'show' },
+        location: { type: 'string', example: 'Parque Farroupilha' },
+        dateAndTime: { type: 'Date', example: '2024-10-21T21:30:30.010Z' },
+      },
+    },
+  })
+  @UseGuards(AuthGuard)
   @Put(':id/update')
   async update(
     @Param('id') id: string,
@@ -64,13 +102,68 @@ export class EventController {
     return this.eventService.update(id, updateEventDto, req.user)
   }
 
+  @ApiOperation({
+    summary: 'Delete Event',
+    description: 'Delete an event.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Event deleted successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request to delete the event.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Request denied.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error.',
+  })
+  @UseGuards(AuthGuard)
   @Delete(':id/delete')
   async delete(@Param('id') id: string, @Request() req) {
     return this.eventService.delete(id, req.user)
   }
 
-  @Get('all')
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.eventService.findAll(Number(page) || 1, Number(limit) || 10)
+  @ApiOperation({
+    summary: 'List Events',
+    description: 'List all events.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Events listed successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Request denied.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error.',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number. Default: 1',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Number of items per page. Default: 10',
+  })
+  @Get(':tenantId/list')
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Param('tenantId') tenantId: string,
+  ) {
+    return this.eventService.findAll(Number(page), Number(limit), tenantId)
   }
 }

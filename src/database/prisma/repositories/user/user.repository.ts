@@ -27,6 +27,30 @@ export class UserRepository implements IUserRepository {
     return users.map((user) => UserMapper.toDomain(user))
   }
 
+  async findByEmailOrUsername(
+    email: string,
+    name: string,
+    tenantId: string,
+  ): Promise<User | null> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        tenantId, // Aplica-se sempre
+        OR: [
+          {
+            email,
+          },
+          {
+            name,
+          },
+        ],
+      },
+    })
+
+    console.log(user)
+
+    return user ? UserMapper.toDomain(user) : null
+  }
+
   async findByVerified(verified: string): Promise<User | null> {
     const user = await this.prisma.user.findFirst({
       where: {

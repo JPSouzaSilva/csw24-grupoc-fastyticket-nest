@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common'
 import { CreateEventDto } from 'src/http/dtos/event/create.event.dto'
 import { UpdateEventDTO } from 'src/http/dtos/event/update.event.dto'
@@ -13,8 +14,8 @@ import { IEventRepository } from 'src/application/repositories/event.repository.
 export class EventService {
   constructor(private readonly eventRepository: IEventRepository) {}
 
-  async findAll(page: number, limit: number) {
-    return this.eventRepository.findAll(page, limit)
+  async findAll(page: number, limit: number, tenantId: string) {
+    return await this.eventRepository.findAll(page, limit, tenantId)
   }
 
   async findById(id: string) {
@@ -42,6 +43,14 @@ export class EventService {
   }
 
   async update(id: string, data: UpdateEventDTO, userToRequest: User) {
+    const ownerId = await this.getOwnerId(id)
+
+    if (userToRequest.id !== ownerId) {
+      throw new UnauthorizedException(
+        'You do not have permission to update this event',
+      )
+    }
+
     if (userToRequest.role !== 'ADMIN') {
       throw new ForbiddenException(
         'You do not have permission to create an event',
@@ -65,6 +74,14 @@ export class EventService {
   }
 
   async delete(id: string, userToRequest: User) {
+    const ownerId = await this.getOwnerId(id)
+
+    if (userToRequest.id !== ownerId) {
+      throw new UnauthorizedException(
+        'You do not have permission to update this event',
+      )
+    }
+
     if (userToRequest.role !== 'ADMIN') {
       throw new ForbiddenException(
         'You do not have permission to create an event',
@@ -78,5 +95,11 @@ export class EventService {
     }
 
     return await this.eventRepository.delete(id)
+  }
+
+  async getOwnerId(id: string) {
+    const event = await this.eventRepository.findById(id)
+
+    return event.ownerId
   }
 }

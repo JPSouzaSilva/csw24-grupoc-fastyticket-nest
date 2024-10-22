@@ -21,12 +21,15 @@ export class EventRepository implements IEventRepository {
   async findAll(
     page: number,
     limit: number,
+    tenantId: string,
   ): Promise<PaginatedEventsDto<Event>> {
     const events = await this.prisma.event.findMany({
-      skip: page * limit,
+      where: {
+        tenantId,
+      },
+      skip: (page - 1) * limit,
       take: limit,
     })
-
     return {
       data: events.map((event) => EventMapper.toDomain(event)),
       page,
