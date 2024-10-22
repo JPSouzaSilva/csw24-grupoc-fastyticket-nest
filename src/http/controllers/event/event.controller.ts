@@ -22,7 +22,6 @@ import { CreateEventDto } from 'src/http/dtos/event/create.event.dto'
 import { EventService } from 'src/application/services/event/event.service'
 import { UpdateEventDTO } from 'src/http/dtos/event/update.event.dto'
 
-@UseGuards(AuthGuard)
 @Controller('event')
 @ApiTags('Event')
 export class EventController {
@@ -53,6 +52,7 @@ export class EventController {
     required: true,
     type: CreateEventDto,
   })
+  @UseGuards(AuthGuard)
   @Post('create')
   async create(@Request() req, @Body() createEventDto: CreateEventDto) {
     return this.eventService.create(createEventDto, req.user)
@@ -92,6 +92,7 @@ export class EventController {
       },
     },
   })
+  @UseGuards(AuthGuard)
   @Put(':id/update')
   async update(
     @Param('id') id: string,
@@ -121,6 +122,7 @@ export class EventController {
     status: 500,
     description: 'Internal server error.',
   })
+  @UseGuards(AuthGuard)
   @Delete(':id/delete')
   async delete(@Param('id') id: string, @Request() req) {
     return this.eventService.delete(id, req.user)
@@ -156,8 +158,12 @@ export class EventController {
     required: false,
     description: 'Number of items per page. Default: 10',
   })
-  @Get()
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.eventService.findAll(Number(page) || 1, Number(limit) || 10)
+  @Get(':tenantId/list')
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Param('tenantId') tenantId: string,
+  ) {
+    return this.eventService.findAll(Number(page), Number(limit), tenantId)
   }
 }

@@ -256,8 +256,6 @@ export class TicketService {
   }
 
   async sendMailToTicketOwner(ownerMail: string, eventName: string) {
-    console.log('Sending email to ticket owner')
-    console.log('Owner email:', ownerMail)
     await this.mailService.sendMail({
       to: ownerMail,
       subject: 'Ingresso Vendido',

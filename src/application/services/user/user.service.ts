@@ -27,8 +27,6 @@ export class UserService {
   async registerAdmin(data: RegisterUserDto, userRequest: User) {
     const { email, name, tenantId } = data
 
-    console.log(userRequest)
-
     if (userRequest.role !== 'SUPADMIN') {
       throw new UnauthorizedException('Unauthorized')
     }
@@ -48,7 +46,9 @@ export class UserService {
       userId: user.id,
     })
 
-    if (await this.userRepository.findByVerified(verified)) {
+    if (
+      await this.userRepository.findByEmailOrUsername(email, name, tenantId)
+    ) {
       throw new BadRequestException('User already exists')
     }
 
@@ -92,7 +92,9 @@ export class UserService {
       userId: user.id,
     })
 
-    if (await this.userRepository.findByVerified(verified)) {
+    if (
+      await this.userRepository.findByEmailOrUsername(email, name, tenantId)
+    ) {
       throw new BadRequestException('User already exists')
     }
 

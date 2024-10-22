@@ -7,6 +7,7 @@ export abstract class IEventRepository {
   abstract findAll(
     page: number,
     limit: number,
+    tenantId: string,
   ): Promise<PaginatedEventsDto<Event>>
 
   abstract findById(id: string): Promise<Event | null>

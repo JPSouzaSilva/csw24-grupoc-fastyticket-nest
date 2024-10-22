@@ -14,8 +14,8 @@ import { IEventRepository } from 'src/application/repositories/event.repository.
 export class EventService {
   constructor(private readonly eventRepository: IEventRepository) {}
 
-  async findAll(page: number, limit: number) {
-    return this.eventRepository.findAll(page, limit)
+  async findAll(page: number, limit: number, tenantId: string) {
+    return await this.eventRepository.findAll(page, limit, tenantId)
   }
 
   async findById(id: string) {
