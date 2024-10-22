@@ -58,6 +58,26 @@ export class TicketController {
   }
 
   @UseGuards(AuthGuard)
+  @ApiOperation({
+    summary: 'List all tickets bought by user',
+    description: 'Fetches all tickets.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Tickets listed successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid provided data.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Request denied.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error.',
+  })
   @Get()
   findAllBougthTickets(@Request() req) {
     return this.ticketService.findAllBougthTickets(req.user)

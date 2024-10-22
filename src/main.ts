@@ -7,10 +7,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
   const config = new DocumentBuilder()
-    .setTitle('Titulo')
-    .setDescription('Documentação da API do projeto')
+    .setTitle('FastyTicket')
+    .setDescription('Documentação da API do projeto FastyTicket')
     .setVersion('1.0')
-    .addTag('Tag')
     .addSecurity('apiKey', {
       type: 'http',
       scheme: 'basic',
