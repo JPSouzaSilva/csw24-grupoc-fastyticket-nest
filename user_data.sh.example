@@ -1,34 +1,28 @@
 #!/bin/bash
 
-# Executar como root
 sudo su
 
-# Atualizar pacotes e instalar Docker
 yum update -y
 yum install -y docker
 yum install -y libxcrypt-compat
 
-# Iniciar Docker
 service docker start
 
-# Adicionar ec2-user ao grupo docker para evitar usar sudo com docker
 usermod -a -G docker ec2-user
 
-# Instalar Docker Compose
 curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-# Criar diretório da aplicação
 mkdir -p /home/ec2-user/fastyticket
 
-# Criar arquivo .env com variáveis de ambiente
+#.env
 cat <<EOF > /home/ec2-user/fastyticket/.env
-DATABASE_URL="postgresql://<user>:<password>@localhost:5432/<dbname>?schema=public"
+DATABASE_URL="postgresql://<user>:<password>@db:5432/<dbname>?schema=public"
 MAILTRAP_USER=<USER>
 MAILTRAP_PASSWORD=<PASSWORD>
 EOF
 
-# Criar arquivo docker-compose.yml para configurar a aplicação e o banco de dados
+# docker-compose.yml
 cat <<EOF > /home/ec2-user/fastyticket/docker-compose.yml
 version: '3.8'
 
@@ -56,11 +50,8 @@ services:
       - db
 EOF
 
-# Alterar permissões do diretório para o usuário ec2-user
 chown -R ec2-user:ec2-user /home/ec2-user/fastyticket
 
-# Navegar até o diretório da aplicação
 cd /home/ec2-user/fastyticket
 
-# Rodar o docker-compose para subir os containers
 docker-compose up -d
