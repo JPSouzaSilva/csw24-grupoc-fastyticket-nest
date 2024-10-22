@@ -14,7 +14,7 @@ import { AuthenticTicketDto } from 'src/http/dtos/ticket/authentic.ticket.dto'
 import { CreateTicketDto } from 'src/http/dtos/ticket/create.ticket.dto'
 import { TicketService } from 'src/application/services/ticket/ticket.service'
 import { TicketBuyDto } from 'src/http/dtos/ticket/buy.ticket.dto'
-import { User } from 'src/application/models/User'
+import { TicketSellDto } from 'src/http/dtos/ticket/sell.ticket.dto'
 
 @Controller('ticket')
 @ApiTags('Ticket')
@@ -123,6 +123,51 @@ export class TicketController {
   @Get('event/:id')
   findById(@Param('id') id: string) {
     return this.ticketService.findByEventId(id)
+  }
+
+  @ApiOperation({
+    summary: 'Refund Ticket',
+    description: 'Refund a ticket.',
+  })
+  @ApiResponse({
+      status: 200,
+      description: 'Ticket refunded successfully.',
+      example: {
+          message: 'Refund completed successfully.'
+      } 
+  })
+  @ApiResponse({
+      status: 400,
+      description: 'Invalid provided data.',
+      example: {
+          message: 'The data provided for the ticket refund is invalid.',
+      }
+  })
+  @ApiResponse({
+      status: 401,
+      description: 'Request denied.',
+      example: {
+          message: 'Unauthorized.',
+      }
+  })
+  @ApiResponse({
+      status: 500,
+      description: 'Internal server error.',
+      example: {
+          message: 'Internal server error.',
+      }
+  })
+  /*
+  @ApiBody({
+    description: 'Data for the ticket refund',
+    required: true,
+    type: TicketRefundDto
+  })
+  */
+  @UseGuards(AuthGuard)
+  @Post('refund/:ticketId')
+  refund(@Request() req, @Param('ticketId') ticketId: string) {
+    return this.ticketService.refundTicket(ticketId, req.user)
   }
 
   @UseGuards(AuthGuard)
