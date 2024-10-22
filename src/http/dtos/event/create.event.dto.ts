@@ -2,6 +2,12 @@ import { ApiProperty } from "@nestjs/swagger"
 
 export class CreateEventDto {
   @ApiProperty({
+    description: 'Tenant Id',
+    example: 'clj0f5w9b0000ldqk8zse72y4'
+  })
+  tenantId: string
+
+  @ApiProperty({
     description: 'Name',
     example: 'Numanice'
   })
@@ -18,6 +24,12 @@ export class CreateEventDto {
     example: 'Parque Harmonia'
   })
   location: string
+
+  @ApiProperty({
+    description: 'Owner Id',
+    example: 'clj0f6k5d0001ldqkc3yh9r6g'
+  })
+  ownerId: string
 
   @ApiProperty({
     description: 'Date and Time',

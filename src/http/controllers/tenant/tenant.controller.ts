@@ -44,16 +44,8 @@ export class TenantController {
   })
   @ApiBody({
     description: 'Data for creating a tenant',
-    schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string', example: 'Xanflis' },
-        contactInfo: { type: 'string', example: 'xanflis@email.com' },
-        paymentPreference: { type: 'string', example: 'Bitcoin' },
-        notification: { type: 'boolean', example: true }
-      },
-      required: ['name']
-    }
+    required: true,
+    type: CreateTenantDTO
   })
   @Post('create')
   async create(@Body() data: CreateTenantDTO) {
@@ -103,6 +95,7 @@ export class TenantController {
   @ApiBody({
     description: 'Data for updating the tenant',
     required: true,
+    type: UpdateTenantDTO,
     schema: {
       type: 'object',
       properties: {
@@ -151,7 +144,6 @@ export class TenantController {
       message: 'Internal server error.',
     }
   })
-  
   @Delete(':id/delete')
   async delete(@Param('id') id: string) {
     return this.tenantService.delete(id)

@@ -58,16 +58,7 @@ export class EventController {
   @ApiBody({
     description: 'Data for creating an event',
     required: true,
-    type: CreateEventDto,
-    schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string', example: 'Numanice' },
-        type: { type: 'string', example: 'show' },
-        location: { type: 'string', example: 'Parque Harmonia' },
-        dateAndTime: { type: 'Date', example: '2024-10-21T21:30:30.010Z' }
-      }
-    }
+    type: CreateEventDto
   })
   @Post('create')
   async create(@Request() req, @Body() createEventDto: CreateEventDto) {
@@ -113,9 +104,11 @@ export class EventController {
     schema: {
       type: 'object',
       properties: {
+        tenantId: { type: 'string', example: 'clj0f5w9b0000ldqk8zse72y4' },
         name: { type: 'string', example: 'Numanice 2' },
         type: { type: 'string', example: 'show' },
         location: { type: 'string', example: 'Parque Farroupilha' },
+        ownerId: { type: 'string', example: 'clj0f6k5d0001ldqkc3yh9r6g' },
         dateAndTime: { type: 'Date', example: '2024-10-21T21:30:30.010Z' }
       }
     }
@@ -178,7 +171,7 @@ export class EventController {
           eventId: '1',
           tenantId: '123',
           name: 'Numanice',
-          type: 'show',
+          type: 'Show',
           location: 'Parque Harmonia',
           ownerId: 'clj0f5w9b0000ldqk8zse72y4',
           dateAndTime: '2024-10-21T21:30:30.010Z'
@@ -187,7 +180,7 @@ export class EventController {
           eventId: '2',
           tenantId: '456',
           name: 'Roger Waters',
-          type: 'show',
+          type: 'Show',
           location: 'Arena do Grêmio',
           ownerId: 'clj0f5w9b0000ldqk8zse72y4',
           dateAndTime: '2024-10-21T21:30:30.010Z'

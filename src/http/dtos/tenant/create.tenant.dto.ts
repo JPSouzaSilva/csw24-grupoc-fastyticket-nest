@@ -9,7 +9,7 @@ export class CreateTenantDTO {
 
   @ApiProperty({
     description: 'Contact Info',
-    example: 'example@email.com'
+    example: 'sympla@email.com'
   })
   contactInfo: string
 

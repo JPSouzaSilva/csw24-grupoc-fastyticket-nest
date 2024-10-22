@@ -57,19 +57,7 @@ export class TicketController {
   @ApiBody({
     description: 'Data for making new tickets available.',
     required: true,  
-    type: CreateTicketDto,
-    schema: {
-      type: 'object',
-      properties: {
-        eventId: { type: 'string', example: 'clj0f5w9b0000ldqk8zse72y4' },
-        tenantId: { type: 'string', example: 'clj0f6k5d0001ldqkc3yh9r6g' },
-        price: { type: 'number', example: '150.0' },
-        selletId: { type: 'string', example: 'clj0f6n1e0002ldqkce8w3fs7' },
-        code: { type: 'string', example: 'clj0f6p7f0003ldqkcx1x2t8b' },
-        status: { type: 'string', example: 'disponível' },
-        description: { type: 'string', example: 'Show' }
-      }
-    }
+    type: CreateTicketDto
   })
   @Post('create')
   create(@Request() req, @Body() createTicketDto: CreateTicketDto) {
@@ -79,8 +67,8 @@ export class TicketController {
   @ApiOperation({
     summary: 'Search Tickets by Event',
     description: 'Fetches all tickets for an event.',
-})
-@ApiResponse({
+  })
+  @ApiResponse({
     status: 200,
     description: 'Tickets listed successfully.',
     example: [
@@ -173,14 +161,7 @@ export class TicketController {
   @ApiBody({
     description: 'Data for the ticket purchase',
     required: true,
-    type: TicketBuyDto,
-    schema: {
-      type: 'object',
-      properties: {
-        ticketId: { type: 'string', example: 'clj0f6p7f0003ldqkcx1x2t8b' },
-        buyerId: { type: 'string', example: 'clj0f6rjg0004ldqkds3j5c9t' }
-      }
-    }
+    type: TicketBuyDto
   })
   @Post('buy')
   buyTicket(@Request() req, @Body() buyTicketDTO: TicketBuyDto) {
@@ -223,14 +204,7 @@ export class TicketController {
   @ApiBody({
     description: 'Data for ticket authentication',
     required: true,
-    type: AuthenticTicketDto,
-    schema: {
-      type: 'object',
-      properties: {
-        ticketId: { type: 'string', example: 'clj0f6p7f0003ldqkcx1x2t8b' },
-        codigoUnicoDeVerificacao: { type: 'string', example: 'clj0f6rjg0004ldqkds3j5c9t' }      
-      }
-    }
+    type: AuthenticTicketDto
   })
   @Put('authenticate')
   @UseGuards(AuthGuard)

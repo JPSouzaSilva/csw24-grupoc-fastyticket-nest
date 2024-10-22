@@ -16,6 +16,7 @@ import { RegisterUserDto } from 'src/http/dtos/user/register.user.dto'
 import { NotificationService } from 'src/application/services/notification/notification.service'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { ReturnRegisterUserDto } from 'src/http/dtos/user/register-return.dto'
+import { PreferencesDTO } from 'src/http/dtos/preferences.dto'
 
 @Controller('user')
 @ApiTags('User')
@@ -69,14 +70,16 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'User Information',
+    type: RegisterUserDto,
     example: {
             id: 1,
             name: 'example',
             email: 'example@email.com',
-            role: 'admin',
+            role: 'ADMIN',
             tenantId: 'clj0f5w9b0000ldqk8zse72y4',
             rate: 5,
-            balance: 200.0
+            balance: 200.0,
+            verified: 'example@email.comexampleclj0f5w9b0000ldqk8zse72y4'
     }
   })
   @ApiResponse({
@@ -126,7 +129,7 @@ export class UserController {
     status: 401,
     description: 'Access denied.',
     example: {
-        message: 'User not authorized.',
+        message: 'Unauthorized.',
     }
   })
   @ApiResponse({
@@ -146,8 +149,42 @@ export class UserController {
     return this.userService.register(data)
   }
 
-
   @UseGuards(AuthGuard)
+  @ApiOperation({
+    summary: 'New Admin User Registration',
+    description: 'Creates a new admin user with the provided data.'
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Admin successfully registered.',
+    type: ReturnRegisterUserDto
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid provided data.',
+    example: {
+        message: 'The data provided for admin user registration is invalid.',
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Access denied.',
+    example: {
+        message: 'Unauthorized.',
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error.',
+    example: {
+        message: 'Internal server error.',
+    }
+  })
+  @ApiBody({
+    description: 'User data for registration',
+    required: true,
+    type: RegisterUserDto
+  })
   @Post('register/admin')
   async registerAdmin(@UserRequest() req, @Body() data: RegisterUserDto) {
     return this.userService.registerAdmin(data, req)
@@ -227,11 +264,7 @@ export class UserController {
   @ApiBody({
     description: 'User preferences data',
     required: true,
-    schema: {
-      properties: {
-        notifications: { type: 'boolean', example: true }
-      }
-    }
+    type: PreferencesDTO
   })
   @Put('preferences')
   async preferences(

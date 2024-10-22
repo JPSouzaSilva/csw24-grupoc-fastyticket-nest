@@ -3,13 +3,13 @@ import { ApiProperty } from "@nestjs/swagger"
 export class RegisterUserDto {
   @ApiProperty({
     description: 'Name',
-    example: 'João da Silva'
+    example: 'John da Silva'
   })
   name: string
 
   @ApiProperty({
     description: 'Email',
-    example: 'joaosilva@email.com'
+    example: 'johnsilva@email.com'
   })
   email: string
 
@@ -24,4 +24,22 @@ export class RegisterUserDto {
     example: 'clj0f5w9b0000ldqk8zse72y4'
   })
   tenantId: string
+
+  @ApiProperty({
+    description: 'Rate',
+    example: 5
+  })
+  rate: number
+
+  @ApiProperty({
+    description: 'Balance',
+    example: 200.0
+  })
+  balance: number
+
+  @ApiProperty({
+    description: 'Verified',
+    example: 'joaosilva@email.comJoaodaSilvaclj0f5w9b0000ldqk8zse72y4'
+  })
+  verified: string
 }
