@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
 
 export class CreateTicketDto {
-
   @ApiProperty({
     description: 'Number of Tickets',
     example: 2000

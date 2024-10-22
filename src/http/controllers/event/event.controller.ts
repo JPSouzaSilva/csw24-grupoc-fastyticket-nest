@@ -10,7 +10,7 @@ import {
   Put,
   Delete,
 } from '@nestjs/common'
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger'
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiQuery } from '@nestjs/swagger'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { CreateEventDto } from 'src/http/dtos/event/create.event.dto'
 import { EventService } from 'src/application/services/event/event.service'
@@ -20,7 +20,6 @@ import { date } from 'zod'
 @UseGuards(AuthGuard)
 @Controller('event')
 @ApiTags('Event')
-@ApiBearerAuth()
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 

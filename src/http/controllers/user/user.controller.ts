@@ -8,13 +8,14 @@ import {
   Query,
   ParseBoolPipe,
 } from '@nestjs/common'
-import { ApiBody, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserRequest } from 'src/decorator/user.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { LoginDto } from 'src/http/dtos/login.user.dto'
 import { UserService } from 'src/application/services/user/user.service'
 import { RegisterUserDto } from 'src/http/dtos/user/register.user.dto'
 import { NotificationService } from 'src/application/services/notification/notification.service'
+import { ReturnRegisterUserDto } from 'src/http/dtos/user/register-return.dto'
 
 @Controller('user')
 @ApiTags('User')
@@ -69,12 +70,13 @@ export class UserController {
     status: 200,
     description: 'User Information',
     example: {
-        summary: 'Successful Response',
-        value: {
             id: 1,
-            username: 'example',
-            email: 'example@email.com'
-        }
+            name: 'example',
+            email: 'example@email.com',
+            role: 'admin',
+            tenantId: 'clj0f5w9b0000ldqk8zse72y4',
+            rate: 5,
+            balance: 200.0
     }
   })
   @ApiResponse({
@@ -98,7 +100,6 @@ export class UserController {
         message: 'Internal server error.',
     }
   })
-
   @Get('profile')
   async getUser(@UserRequest() req) {
     return this.userService.findByEmailOrUsername(req.name, req.email)
@@ -111,9 +112,7 @@ export class UserController {
   @ApiResponse({
     status: 201,
     description: 'User successfully registered.',
-    example: {
-        message: 'User successfully registered.'
-    }
+    type: ReturnRegisterUserDto
   })
   @ApiResponse({
     status: 400,
@@ -147,6 +146,38 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
+  @ApiOperation({
+    summary: 'User Balance',
+    description: 'User balance information.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User Balance',
+    example: {
+      balance: 200.0
+    }
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid provided data.',
+    example: {
+        message: 'The provided user data is invalid.',
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Access denied.',
+    example: {
+        message: 'Unauthorized.'
+    }
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error.',
+    example: {
+        message: 'Internal server error.',
+    }
+  })
   @Get('balance')
   async getBalance(@UserRequest() req) {
     return this.userService.getBalance(req.id)
@@ -188,16 +219,12 @@ export class UserController {
   @ApiBody({
     description: 'User preferences data',
     required: true,
-    examples: {
-        example1: {
-            summary: 'Preferences Example',
-            value: {
-                notifications: true
-            },
-        },
-    },
+    schema: {
+      properties: {
+        notifications: { type: 'boolean', example: true }
+      }
+    }
   })
-
   @Put('preferences')
   async preferences(
     @UserRequest() req,

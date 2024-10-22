@@ -8,12 +8,13 @@ import {
   Param,
   Put
 } from '@nestjs/common'
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiBody } from '@nestjs/swagger'
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { AuthenticTicketDto } from 'src/http/dtos/ticket/authentic.ticket.dto'
 import { CreateTicketDto } from 'src/http/dtos/ticket/create.ticket.dto'
 import { TicketService } from 'src/application/services/ticket/ticket.service'
 import { TicketBuyDto } from 'src/http/dtos/ticket/buy.ticket.dto'
+import { User } from 'src/application/models/User'
 
 @Controller('ticket')
 @ApiTags('Ticket')
@@ -231,8 +232,12 @@ export class TicketController {
       }
     }
   })
-  @Put('authenticate')  
-  authenticTicket(@Body() authenticTicketDto: AuthenticTicketDto) {
-    return this.ticketService.authenticate(authenticTicketDto)
+  @Put('authenticate')
+  @UseGuards(AuthGuard)
+  authenticTicket(
+    @Request() req,
+    @Body() authenticTicketDto: AuthenticTicketDto,
+  ) {
+    return this.ticketService.authenticate(authenticTicketDto, req.user)
   }
 }

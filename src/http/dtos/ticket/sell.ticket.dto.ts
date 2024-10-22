@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
 
 export class TicketSellDto {
-
   @ApiProperty({
     description: 'Event Id',
     example: 'clj0f6n1e0002ldqkce8w3fs7'
