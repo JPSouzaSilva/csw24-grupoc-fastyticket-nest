@@ -9,7 +9,6 @@ import {
   Param,
   Put,
   Delete,
-  UnauthorizedException,
 } from '@nestjs/common'
 import {
   ApiBody,
@@ -99,13 +98,6 @@ export class EventController {
     @Request() req,
     @Body() updateEventDto: UpdateEventDTO,
   ) {
-    const ownerId = await this.eventService.getOwnerId(id)
-
-    if (req.user.id !== ownerId) {
-      throw new UnauthorizedException(
-        'You do not have permission to update this event',
-      )
-    }
     return this.eventService.update(id, updateEventDto, req.user)
   }
 
@@ -131,13 +123,6 @@ export class EventController {
   })
   @Delete(':id/delete')
   async delete(@Param('id') id: string, @Request() req) {
-    const ownerId = await this.eventService.getOwnerId(id)
-
-    if (req.user.id !== ownerId) {
-      throw new UnauthorizedException(
-        'You do not have permission to update this event',
-      )
-    }
     return this.eventService.delete(id, req.user)
   }
 
@@ -171,7 +156,7 @@ export class EventController {
     required: false,
     description: 'Number of items per page. Default: 10',
   })
-  @Get('all')
+  @Get()
   findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
     return this.eventService.findAll(Number(page) || 1, Number(limit) || 10)
   }
