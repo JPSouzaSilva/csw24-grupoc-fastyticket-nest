@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1" # Altere para sua região
+  region = "us-east-1"
 }
 
 resource "aws_security_group" "securitygroup" {
@@ -32,5 +32,5 @@ resource "aws_instance" "nestjs_app" {
   ami             = "ami-06b21ccaeff8cd686" 
   instance_type   = "t2.micro"
   user_data       = file("../user_data.sh")
-  vpc_security_group_ids = [aws_security_group.securitygroup.id] # Alterado para vpc_security_group_ids
+  vpc_security_group_ids = [aws_security_group.securitygroup.id]
 }
