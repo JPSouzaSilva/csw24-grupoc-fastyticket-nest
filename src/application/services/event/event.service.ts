@@ -79,4 +79,10 @@ export class EventService {
 
     return await this.eventRepository.delete(id)
   }
+
+  async getOwnerId(id: string) {
+    const event = await this.eventRepository.findById(id)
+
+    return event.ownerId
+  }
 }
