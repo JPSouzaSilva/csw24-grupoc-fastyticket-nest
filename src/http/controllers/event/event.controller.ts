@@ -10,7 +10,7 @@ import {
   Put,
   Delete,
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AuthGuard } from 'src/guard/auth.guard'
 import { CreateEventDto } from 'src/http/dtos/event/create.event.dto'
 import { EventService } from 'src/application/services/event/event.service'
@@ -22,6 +22,34 @@ import type { UpdateEventDTO } from 'src/http/dtos/event/update.event.dto'
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
+  @ApiOperation({
+    summary: 'Create Event',
+    description: 'Create new event as an admin.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Event created successfully.',
+    example: {
+      message: 'Event created successfully.',
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid data provided.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Request denied.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error.',
+  })
+  @ApiBody({
+    description: 'Data for creating an event',
+    required: true,
+    type: CreateEventDto,
+  })
   @Post('create')
   async create(@Request() req, @Body() createEventDto: CreateEventDto) {
     return this.eventService.create(createEventDto, req.user)
