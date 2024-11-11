@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  app:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    container_name: fastyticket-app
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - fastyticket-networks
+
   db:
     container_name: database-fastyticket
     image: postgres
@@ -12,3 +26,7 @@ services:
       - POSTGRES_DB=fastyticket
     volumes:
       - ./data/pg:/data/postgres
+    networks:
+      - fastyticket-networks
+networks:
+  fastyticket-networks:
