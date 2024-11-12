@@ -2,7 +2,10 @@ service: fastyticket-lambda
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs18.x
+  region: us-east-1
+  iam:
+    role: arn:aws:iam::783886212686:role/LabRole
 
 plugins:
   - 'serverless-plugin-typescript'
@@ -17,3 +20,9 @@ functions:
       - http:
           method: any
           path: /{any+}
+
+package: 
+  exclude:
+    - node_modules/**
+    - .git/**
+    - test/**
