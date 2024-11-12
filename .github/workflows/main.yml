@@ -35,7 +35,7 @@ jobs:
         run: |
           docker build -t my-app:dev .
 
-      - name: Run deploy
-        run: 
+      - name: 'Run'
+        run: npm run lambda:start:deploy
 
       
