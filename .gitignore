@@ -61,3 +61,7 @@ user_data.sh
 .terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
+
+# Serverless
+.build
+.serverless
