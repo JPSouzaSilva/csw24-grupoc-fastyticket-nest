@@ -24,4 +24,4 @@ functions:
 
 package: 
   include:
-    - node_modules/@vendia/serverless-express/**
+    - node_modules/aws-serverless-express/**
