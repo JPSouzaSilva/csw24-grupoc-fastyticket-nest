@@ -37,10 +37,10 @@ jobs:
         run: npm run test
 
       - name: Install Serverless
-        run: npm -g install serverless@3
+        run: npm -g install serverless@latest
 
       - name: Install Serverless Offline
-        run: serverless plugin install -n serverless-offline
+        run: serverless plugin install -n serverless-offline@latest
 
       - name: Serverless Deploy
         env:
