@@ -32,7 +32,7 @@ jobs:
 
       - name: Increase Node.js memory limit
         run: |
-          export NODE_OPTIONS="--max-old-space-size=4096"
+          export NODE_OPTIONS="--max-old-space-size=8192"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
