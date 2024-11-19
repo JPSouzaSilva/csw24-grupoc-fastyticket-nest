@@ -40,7 +40,7 @@ jobs:
         run: npm -g install serverless@latest
 
       - name: Install Serverless Offline
-        run: serverless plugin install -n serverless-offline@latest
+        run: npm install --save-dev serverless-offline@latest --force
 
       - name: Serverless Deploy
         env:
