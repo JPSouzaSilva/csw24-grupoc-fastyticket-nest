@@ -22,11 +22,17 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Caching node modules
+      - name: Cache node_modules
         uses: actions/cache@v2
         with:
-          path: "**/node_modules"
-          key: node-modules-${{ hashFiles('app/package.json') }}
+          path: '**/node_modules'
+          key: node-modules-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            node-modules-
+
+      - name: Increase Node.js memory limit
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
