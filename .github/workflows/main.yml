@@ -42,6 +42,9 @@ jobs:
       - name: Install Serverless Offline
         run: npm install --save-dev serverless-offline@latest --force
 
+      - name: Build Project
+        run: node --max-old-space-size=4096 ./node_modules/.bin/nest build
+
       - name: Serverless Deploy
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
