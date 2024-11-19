@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: "18"
 
-      -  name: Caching node modules
+      - name: Caching node modules
         uses: actions/cache@v2
         with:
           path: "**/node_modules"
