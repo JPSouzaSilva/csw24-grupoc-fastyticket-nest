@@ -43,7 +43,7 @@ jobs:
         run: npm install --save-dev serverless-offline@latest --force
 
       - name: Build Project
-        run: node --max-old-space-size=4096 ./node_modules/.bin/nest build
+        run: npm run build
 
       - name: Serverless Deploy
         env:
@@ -52,4 +52,4 @@ jobs:
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
           echo "AWS_ROLE=${{ secrets.AWS_ROLE }}" >> .env
-          npm run lambda:start:deploy
+          cat ./serverless.deploy.yml > ./serverless.yml && serverless deploy
