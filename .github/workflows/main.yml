@@ -22,13 +22,11 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
+      -  name: Caching node modules
+        uses: actions/cache@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          path: "**/node_modules"
+          key: node-modules-${{ hashFiles('app/package.json') }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
