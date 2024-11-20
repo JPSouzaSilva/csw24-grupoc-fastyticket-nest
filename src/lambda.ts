@@ -1,34 +1,58 @@
-import { Handler, Context } from 'aws-lambda'
-import { Server } from 'http'
-import { createServer, proxy } from 'aws-serverless-express'
-import { eventContext } from 'aws-serverless-express/middleware'
-
+import { configure as serverlessExpress } from '@vendia/serverless-express'
 import { NestFactory } from '@nestjs/core'
-import { ExpressAdapter } from '@nestjs/platform-express'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { apiReference } from '@scalar/nestjs-api-reference'
 import { AppModule } from './app.module'
 
-import express from 'express'
+let cachedServer
 
-const binaryMimeTypes: string[] = []
+async function createServer() {
+  const app = await NestFactory.create(AppModule)
 
-let cachedServer: Server
+  // Configuração do Swagger
+  const config = new DocumentBuilder()
+    .setTitle('FastyTicket')
+    .setDescription('Documentação da API do projeto FastyTicket')
+    .setVersion('1.0')
+    .addSecurity('apiKey', {
+      type: 'http',
+      scheme: 'basic',
+    })
+    .addSecurity('sec0', {
+      type: 'apiKey',
+      in: 'header',
+      name: 'access-token',
+    })
+    .build()
+  const document = SwaggerModule.createDocument(app, config)
 
-async function bootstrapServer(): Promise<Server> {
-  if (!cachedServer) {
-    const expressApp = express()
-    const nestApp = await NestFactory.create(
-      AppModule,
-      new ExpressAdapter(expressApp),
-    )
-    nestApp.use(eventContext())
-    await nestApp.init()
-    cachedServer = createServer(expressApp, undefined, binaryMimeTypes)
-  }
-  return cachedServer
+  app.use(
+    '/docs',
+    apiReference({
+      theme: 'alternate',
+      darkMode: true,
+      layout: 'modern',
+      spec: {
+        content: document,
+      },
+    }),
+  )
+
+  app.enableCors({
+    origin: '*',
+  })
+
+  await app.init()
+
+  return serverlessExpress({
+    app: app.getHttpAdapter().getInstance(),
+  })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const handler: Handler = async (event: any, context: Context) => {
-  cachedServer = await bootstrapServer()
-  return proxy(cachedServer, event, context, 'PROMISE').promise
+export const handler = async (event, context) => {
+  if (!cachedServer) {
+    cachedServer = await createServer()
+  }
+
+  return cachedServer(event, context)
 }
