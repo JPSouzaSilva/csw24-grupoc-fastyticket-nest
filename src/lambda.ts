@@ -1,7 +1,6 @@
 import { configure as serverlessExpress } from '@vendia/serverless-express'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { apiReference } from '@scalar/nestjs-api-reference'
 import { AppModule } from './app.module'
 
 let cachedServer
@@ -28,14 +27,6 @@ async function createServer() {
 
   app.use(
     '/docs',
-    apiReference({
-      theme: 'alternate',
-      darkMode: true,
-      layout: 'modern',
-      spec: {
-        content: document,
-      },
-    }),
   )
 
   app.enableCors({
