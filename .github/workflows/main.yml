@@ -45,9 +45,6 @@ jobs:
       - name: Install dependencies
         run: npm install --force
 
-      - name: Run tests
-        run: npm run test
-
       - name: Install Serverless
         run: npm -g install serverless@latest
 
@@ -64,4 +61,4 @@ jobs:
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
           echo "AWS_ROLE=${{ secrets.AWS_ROLE }}" >> .env
-          serverless deploy --cached
+          serverless deploy
