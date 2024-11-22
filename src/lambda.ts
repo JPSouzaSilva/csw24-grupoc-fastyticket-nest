@@ -8,11 +8,10 @@ let cachedServer
 async function createServer() {
   const app = await NestFactory.create(AppModule)
 
-  // Configuração do Swagger
   const config = new DocumentBuilder()
-    .setTitle('FastyTicket')
-    .setDescription('Documentação da API do projeto FastyTicket')
-    .setVersion('1.0')
+    .setTitle('FastyTicket') 
+    .setDescription('Documentação da API do projeto FastyTicket') // Descrição
+    .setVersion('1.0') // Versão da API
     .addSecurity('apiKey', {
       type: 'http',
       scheme: 'basic',
@@ -22,15 +21,14 @@ async function createServer() {
       in: 'header',
       name: 'access-token',
     })
-    .build()
-  const document = SwaggerModule.createDocument(app, config)
+    .build();
 
-  app.use(
-    '/docs',
-  )
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('docs', app, document);
 
   app.enableCors({
-    origin: '*',
+    origin: '*', 
   })
 
   await app.init()
