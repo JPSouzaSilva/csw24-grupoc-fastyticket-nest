@@ -1,0 +1,67 @@
+name: "Main Pipeline"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: "Deploy"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: node-modules-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            node-modules-
+
+      - name: Increase Node.js memory limit
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=8192"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+
+      - name: Install dependencies
+        run: npm install --force
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Install Serverless
+        run: npm -g install serverless@latest
+
+      - name: Install Serverless Offline
+        run: npm install --save-dev serverless-offline@latest --force
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Serverless Deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "AWS_ROLE=${{ secrets.AWS_ROLE }}" >> .env
+          serverless deploy --cached

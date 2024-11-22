@@ -1,0 +1,27 @@
+service: fastyticket-lambda
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  environment:
+    DATABASE_URL: ${env:DATABASE_URL}
+  iam:
+    role: ${env:AWS_IAM_ROLE}
+
+
+plugins:
+  - serverless-offline
+
+
+functions:
+  main: 
+    handler: dist/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /{any+}
+
+package: 
+  include:
+    - node_modules/@vendia/serverless-express/**

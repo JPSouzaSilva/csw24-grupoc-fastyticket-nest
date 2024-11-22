@@ -1,47 +1,46 @@
-import { NestFactory } from '@nestjs/core'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { apiReference } from '@scalar/nestjs-api-reference'
-import { AppModule } from './app.module'
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  // Cria a aplicação NestJS
+  const app = await NestFactory.create(AppModule);
 
+  // Configuração do Swagger para documentação da API
   const config = new DocumentBuilder()
-    .setTitle('FastyTicket')
-    .setDescription('Documentação da API do projeto FastyTicket')
-    .setVersion('1.0')
+    .setTitle('FastyTicket') // Título da documentação
+    .setDescription('Documentação da API do projeto FastyTicket') // Descrição
+    .setVersion('1.0') // Versão da API
+    // Adiciona autenticação HTTP básica
     .addSecurity('apiKey', {
       type: 'http',
       scheme: 'basic',
     })
+    // Adiciona autenticação por chave de API no cabeçalho
     .addSecurity('sec0', {
       type: 'apiKey',
       in: 'header',
       name: 'access-token',
     })
-    .build()
-  const document = SwaggerModule.createDocument(app, config)
-  app.use(
-    '/docs',
-    apiReference({
-      theme: 'alternate',
-      darkMode: true,
-      layout: 'modern',
-      spec: {
-        content: document,
-      },
-    }),
-  )
-  app.enableCors({
-    origin: '*',
-  })
+    .build();
 
-  await app.listen(3000)
-  console.info(
-    `Server is running on http://localhost:${process.env.PORT || 3000}`,
-  )
-  console.info(
-    `The documentation is on http://localhost:${process.env.PORT || 3000}/docs`,
-  )
+  // Cria o documento Swagger baseado na configuração
+  const document = SwaggerModule.createDocument(app, config);
+
+  // Configura o endpoint da documentação Swagger
+  SwaggerModule.setup('docs', app, document);
+
+  // Habilita CORS para permitir requisições de diferentes origens
+  app.enableCors({
+    origin: '*', // Define que qualquer origem pode acessar a API (ajuste conforme necessário para produção)
+  });
+
+  // Inicia o servidor na porta especificada ou na padrão (3000)
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+
+  // Exibe informações no console sobre o servidor e documentação
+  console.info(`Server is running on http://localhost:${port}`);
+  console.info(`The documentation is on http://localhost:${port}/docs`);
 }
-bootstrap()
+bootstrap();
