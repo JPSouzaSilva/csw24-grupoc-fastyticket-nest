@@ -43,13 +43,13 @@ jobs:
           aws-region: us-east-1
 
       - name: Install dependencies
-        run: npm install --force
+        run: npm install
 
       - name: Install Serverless
         run: npm -g install serverless@3
 
       - name: Install Serverless Offline
-        run: npm install --save-dev serverless-offline@latest --force
+        run: npm install -D serverless-offline
 
       - name: Build Project
         run: npm run build
