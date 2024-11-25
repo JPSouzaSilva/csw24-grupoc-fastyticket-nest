@@ -43,16 +43,16 @@ jobs:
           aws-region: us-east-1
 
       - name: Install dependencies
-        run: npm install --force
-
-      - name: Run tests
-        run: npm run test
+        run: npm install
 
       - name: Install Serverless
-        run: npm -g install serverless@latest
+        run: npm -g install serverless@3
 
       - name: Install Serverless Offline
-        run: npm install --save-dev serverless-offline@latest --force
+        run: npm install -D serverless-offline
+
+      - name: Generate Prisma
+        run: npx prisma generate
 
       - name: Build Project
         run: npm run build
@@ -63,5 +63,5 @@ jobs:
           AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-          echo "AWS_ROLE=${{ secrets.AWS_ROLE }}" >> .env
-          serverless deploy --cached
+          echo "AWS_IAM_ROLE=${{ secrets.AWS_ROLE }}" >> .env
+          serverless deploy

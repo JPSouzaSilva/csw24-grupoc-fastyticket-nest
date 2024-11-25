@@ -1,10 +1,9 @@
-import { NestFactory } from '@nestjs/core'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { apiReference } from '@scalar/nestjs-api-reference'
-import { AppModule } from './app.module'
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
     .setTitle('FastyTicket')
@@ -19,29 +18,20 @@ async function bootstrap() {
       in: 'header',
       name: 'access-token',
     })
-    .build()
-  const document = SwaggerModule.createDocument(app, config)
-  app.use(
-    '/docs',
-    apiReference({
-      theme: 'alternate',
-      darkMode: true,
-      layout: 'modern',
-      spec: {
-        content: document,
-      },
-    }),
-  )
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('docs', app, document);
+
   app.enableCors({
     origin: '*',
-  })
+  });
 
-  await app.listen(3000)
-  console.info(
-    `Server is running on http://localhost:${process.env.PORT || 3000}`,
-  )
-  console.info(
-    `The documentation is on http://localhost:${process.env.PORT || 3000}/docs`,
-  )
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+
+  console.info(`Server is running on http://localhost:${port}`);
+  console.info(`The documentation is on http://localhost:${port}/docs`);
 }
-bootstrap()
+bootstrap();
