@@ -51,7 +51,7 @@ jobs:
       - name: Install Serverless Offline
         run: npm install -D serverless-offline
 
-      - name: Generate prisma
+      - name: Generate Prisma
         run: npx prisma generate
 
       - name: Build Project
