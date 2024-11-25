@@ -61,6 +61,21 @@ export class UserController {
     return this.userService.login(loginDto)
   }
 
+  @Get('test')
+  async test() {
+    return {
+      isBase64Encoded: false,
+      statusCode: 200,
+      statusDescription: '200 OK',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: 'Hello World!',
+      }),
+    }
+  }
+
   @UseGuards(AuthGuard)
   @ApiOperation({
     summary: 'Get User ',
