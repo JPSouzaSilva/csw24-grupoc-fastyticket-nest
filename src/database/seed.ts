@@ -1,10 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 async function main() {
-
-    await prisma.tenant.deleteMany();
-    await prisma.user.deleteMany();
-
     const tenant = await prisma.tenant.upsert({
         where: {
             tenantId: "1",
