@@ -11,7 +11,8 @@
     "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "deploy": "npm run build && serverless deploy"
+    "deploy": "npm run build && serverless deploy",
+    "seed": "ts-node ./src/database/seed.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
