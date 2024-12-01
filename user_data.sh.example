@@ -1,9 +1,0 @@
-#!/bin/bash
-
-sudo su
-yum update -y
-yum install -y docker
-service docker start
-usermod -a -G docker ec2-user
-
-docker run -d -p 3000:3000 kaitowing/fastyticket:latest
