@@ -1,3 +1,8 @@
+# Provider AWS
+provider "aws" {
+  region = "us-east-1"
+}
+
 # VPC
 resource "aws_vpc" "nestjs_vpc" {
   cidr_block = "10.0.0.0/16"
@@ -44,34 +49,45 @@ resource "aws_route_table_association" "public_subnet_2_assoc" {
   route_table_id = aws_route_table.public_route_table.id
 }
 
+# Security Group
+resource "aws_security_group" "nestjs_security_group" {
+  name_prefix = "nestjs-sg"
+  vpc_id      = aws_vpc.nestjs_vpc.id
+
+  ingress {
+    description = "Allow inbound traffic on port 3000"
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow inbound traffic on port 5432"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# CloudWatch Log Group
+resource "aws_cloudwatch_log_group" "nestjs_log_group" {
+  name              = "/ecs/nestjs-service"
+  retention_in_days = 7 # Opcional: Defina a retenção de logs (em dias)
+}
+
 # Cluster ECS
 resource "aws_ecs_cluster" "nestjs_cluster" {
   name = "nestjs-cluster"
-}
-
-# IAM Role para execução de tarefas ECS
-resource "aws_iam_role" "ecs_task_role" {
-  name = "ecsTaskExecutionRole"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-}
-
-# Anexar políticas ao IAM Role
-resource "aws_iam_policy_attachment" "ecs_task_execution_policy" {
-  name       = "ecsTaskExecutionPolicy"
-  roles      = [aws_iam_role.ecs_task_role.name]
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 # Task Definition
@@ -81,16 +97,30 @@ resource "aws_ecs_task_definition" "nestjs_task" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
   memory                   = "512"
-  execution_role_arn       = aws_iam_role.ecs_task_role.arn
+  execution_role_arn       = "arn:aws:iam::329295135012:role/LabRole" #TROCAR
 
   container_definitions = jsonencode([{
     name      = "nestjs-container"
-    image     = "jpsouzasilva/fastyticket:latest" # Substitua pelo nome correto da sua imagem no Docker Hub
+    image     = "jpsouzasilva/fastyticket:latest" #TROCAR
     essential = true
     portMappings = [{
       containerPort = 3000
       hostPort      = 3000
     }]
+    environment = [
+      {
+        name  = "DATABASE_URL"
+        value = "postgresql://admin:admin@ec2-54-242-57-82.compute-1.amazonaws.com:5432/fastyticket?schema=public"
+      }
+    ]
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.nestjs_log_group.name
+        "awslogs-region"        = "us-east-1"
+        "awslogs-stream-prefix" = "nestjs"
+      }
+    }
   }])
 }
 
@@ -104,7 +134,8 @@ resource "aws_ecs_service" "nestjs_service" {
 
   network_configuration {
     subnets          = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-    security_groups  = [aws_security_group.securitygroup.id]
+    security_groups  = [aws_security_group.nestjs_security_group.id]
     assign_public_ip = true
   }
 }
+  
