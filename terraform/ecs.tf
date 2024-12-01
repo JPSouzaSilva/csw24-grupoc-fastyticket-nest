@@ -1,14 +1,11 @@
-# Provider AWS
 provider "aws" {
   region = "us-east-1"
 }
 
-# VPC
 resource "aws_vpc" "nestjs_vpc" {
   cidr_block = "10.0.0.0/16"
 }
 
-# Subnets públicas
 resource "aws_subnet" "public_subnet_1" {
   vpc_id                  = aws_vpc.nestjs_vpc.id
   cidr_block              = "10.0.1.0/24"
@@ -23,12 +20,10 @@ resource "aws_subnet" "public_subnet_2" {
   map_public_ip_on_launch = true
 }
 
-# Internet Gateway
 resource "aws_internet_gateway" "nestjs_igw" {
   vpc_id = aws_vpc.nestjs_vpc.id
 }
 
-# Tabela de rotas públicas
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.nestjs_vpc.id
 
@@ -38,7 +33,6 @@ resource "aws_route_table" "public_route_table" {
   }
 }
 
-# Associação de tabelas de rotas às subnets públicas
 resource "aws_route_table_association" "public_subnet_1_assoc" {
   subnet_id      = aws_subnet.public_subnet_1.id
   route_table_id = aws_route_table.public_route_table.id
@@ -49,7 +43,6 @@ resource "aws_route_table_association" "public_subnet_2_assoc" {
   route_table_id = aws_route_table.public_route_table.id
 }
 
-# Security Group
 resource "aws_security_group" "nestjs_security_group" {
   name_prefix = "nestjs-sg"
   vpc_id      = aws_vpc.nestjs_vpc.id
@@ -79,18 +72,15 @@ resource "aws_security_group" "nestjs_security_group" {
   }
 }
 
-# CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "nestjs_log_group" {
   name              = "/ecs/nestjs-service"
-  retention_in_days = 7 # Opcional: Defina a retenção de logs (em dias)
+  retention_in_days = 7
 }
 
-# Cluster ECS
 resource "aws_ecs_cluster" "nestjs_cluster" {
   name = "nestjs-cluster"
 }
 
-# Task Definition
 resource "aws_ecs_task_definition" "nestjs_task" {
   family                   = "nestjs-task"
   network_mode             = "awsvpc"
@@ -101,7 +91,7 @@ resource "aws_ecs_task_definition" "nestjs_task" {
 
   container_definitions = jsonencode([{
     name      = "nestjs-container"
-    image     = "jpsouzasilva/fastyticket:latest" #TROCAR
+    image     = "329295135012.dkr.ecr.us-east-1.amazonaws.com/fastyticket:latest" #TROCAR
     essential = true
     portMappings = [{
       containerPort = 3000
@@ -110,7 +100,7 @@ resource "aws_ecs_task_definition" "nestjs_task" {
     environment = [
       {
         name  = "DATABASE_URL"
-        value = "postgresql://admin:admin@ec2-54-242-57-82.compute-1.amazonaws.com:5432/fastyticket?schema=public"
+        value = "postgresql://admin:admin@ec2-98-81-227-147.compute-1.amazonaws.com:5432/fastyticket?schema=public" #TROCAR
       }
     ]
     logConfiguration = {
@@ -124,7 +114,6 @@ resource "aws_ecs_task_definition" "nestjs_task" {
   }])
 }
 
-# Serviço ECS
 resource "aws_ecs_service" "nestjs_service" {
   name            = "nestjs-service"
   cluster         = aws_ecs_cluster.nestjs_cluster.id
@@ -138,4 +127,4 @@ resource "aws_ecs_service" "nestjs_service" {
     assign_public_ip = true
   }
 }
-  
+
